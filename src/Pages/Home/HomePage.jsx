@@ -14,41 +14,44 @@ const HomePage=()=>{
     const dispatch=useDispatch()
     const location=useLocation();
     const jwt=localStorage.getItem("jwt");
-    
-   
-
     useEffect(()=>{
         dispatch(getProfileAction(jwt))
 },[])
     return(
-        <div className="px-20">
-            <Grid container spacing={0}>
-                <Grid item xs={0} lg={3}>
-                    <div className="sticky top-0">
-                        <Sidebar/>
-                    </div>
-                </Grid>
-                <Grid
-                    lg={location.pathname==="/"?6:9}
-                    item className="flex justify-center px-5" xs={12}>
-                    <Routes>
-                        <Route path="/" element={<MiddlePart/>}>
-                        </Route>
-                        <Route path="/reels" element={<Reels/>}>
-                        </Route>
-                        <Route path="/create-reels" element={<CreateReels open={true}/>}>
-                        </Route>
-                        <Route path="/profile/:userId" element={<Profile />}>
-                        </Route>
-                    </Routes>
-                </Grid>
-                {location.pathname==="/"?<Grid item lg={3} className="relative">
-                    <div className="sticky top-0 w-full">
-                        <HomeRight/>
-                    </div>
-                </Grid>:""}
+        <div className="px-5 lg:px-20">
+    <Grid container spacing={2}>
+        <Grid item xs={0} sm={0} md={0} lg={3}>
+            <div className="sticky top-0">
+                <Sidebar />
+            </div>
+        </Grid>
+
+        <Grid
+            item
+            xs={12} 
+            sm={12} 
+        md={12} 
+            lg={location.pathname === "/" ? 6 : 9} 
+            className="flex justify-center px-5"
+        >
+            <Routes>
+                <Route path="/" element={<MiddlePart />} />
+                <Route path="/reels" element={<Reels />} />
+                <Route path="/create-reels" element={<CreateReels open={true} />} />
+                <Route path="/profile/:userId" element={<Profile />} />
+            </Routes>
+        </Grid>
+
+        {location.pathname === "/" && (
+            <Grid item xs={0} sm={0} md={0} lg={3} className="relative">
+                <div className="sticky top-0 w-full">
+                    <HomeRight />
+                </div>
             </Grid>
-        </div>
+        )}
+    </Grid>
+</div>
+
     )
 }
 export default HomePage
