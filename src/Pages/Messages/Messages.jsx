@@ -87,8 +87,7 @@ const Messages = () => {
     const onMessageReceive = (nmessage) => {
       const receivedMsg = JSON.parse(nmessage.body);
       console.log("Message received from WebSocket", receivedMsg);
-      
-      if (receivedMsg.chatId === currentChat?.chatId) {
+      if (receivedMsg.chatId == currentChat?.chatId) {
         setMessages((prevMessages) => [...prevMessages, receivedMsg]);
       }
     };
