@@ -49,7 +49,7 @@ export default function ProfileModal({open,handleClose}) {
     },[selectedImage])
     const formik=useFormik({
         initialValues:{
-            profile:'',
+            profile:null,
             name:null,
             userName:null,
             bio:null
@@ -57,6 +57,7 @@ export default function ProfileModal({open,handleClose}) {
         onSubmit:(values,)=>{
             console.log("values",values)
             dispatch(updateProfileAction(values))
+            handleClose()
         }
     })
 

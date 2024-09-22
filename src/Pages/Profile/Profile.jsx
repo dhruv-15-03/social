@@ -46,6 +46,7 @@ const Profile=()=>{
             dispatch(userReels(userId))
         }
       }, [value,dispatch,userId]);
+
       
       const [isLiked, setIsLiked] = React.useState(false );
       useEffect(() => {
@@ -56,14 +57,17 @@ const Profile=()=>{
       }, [profile, auth?.user?.id]);
 
       const handleClick=()=>{
-        console.log('click')
         dispatch(follow(userId))
         setIsLiked((prevLiked) => !prevLiked);
         dispatch(userPro(userId));
       }
       const [open, setOpen] = React.useState(false);
       const handleOpenProfileModal= () => setOpen(true);
-      const handleClose = () => setOpen(false);
+      const handleClose = () => {
+        setOpen(false);
+        window.location.reload()
+    }
+      
       
     return(
         <Card className="my-10 w-[70%]">

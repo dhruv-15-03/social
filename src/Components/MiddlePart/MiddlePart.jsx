@@ -43,7 +43,7 @@ const MiddlePart=()=>{
             <Card className="p-5 mt-5">
                 <div className="flex justify-between">
                     <Avatar sx={{bgcolor:yellow[600]}}>
-                        {auth.user?.name[0]}
+                        {auth.user?.name[0]?auth.user?.name[0]:'O'}
                     </Avatar>
                     <input onClick={handleOpenCreatePostModal} readOnly className="outline-none w-[90%] rounded-full px-5 bg-transparent border-[#3b4054] border" type="text" placeholder="New Post"/>
                     
