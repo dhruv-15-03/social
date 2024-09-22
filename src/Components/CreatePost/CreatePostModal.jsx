@@ -3,6 +3,8 @@ import { useFormik } from 'formik';
 import React from 'react'
 import ImageIcon from "@mui/icons-material/Image"
 import VideoCallIcon from "@mui/icons-material/VideoCall"
+import ArticleIcon from "@mui/icons-material/Article";
+
 import { uploadToCloudinary } from '../utils/uploadToCloudinary';
 import { useDispatch, useSelector } from 'react-redux';
 import {  createPostAction } from '../../Redux/Post/post.action';
@@ -27,6 +29,7 @@ const CreatePostModal = ({handleClose,open}) => {
     const[selectedImage,setSelectedImage]=React.useState();
     const[selectedVideo,setSelectedVideo]=React.useState();
     const[isLoading,setIsLoading]=React.useState(false);
+    const [showTextInput, setShowTextInput] = React.useState(false);
     const dispatch=useDispatch();
     const handleSelectImage=async(event)=>{
         setIsLoading(true);
@@ -42,13 +45,16 @@ const CreatePostModal = ({handleClose,open}) => {
         setIsLoading(false)
         formik.setFieldValue("video",videoUrl)
     }
+    const handleArticleClick = () => {
+        setShowTextInput(prev => !prev); 
+      };
     const formik=useFormik(
         {
             initialValues:{
                 caption:"",
                 image:"",
                 video:"",
-
+                post:"",
             },
             onSubmit:(values)=>{
                 dispatch(createPostAction(values))
@@ -106,8 +112,30 @@ const CreatePostModal = ({handleClose,open}) => {
                         </label>
                         <span>Video</span>
                     </div>
-
+                    <div>
+                        <input type='text'
+                        onChange={handleSelectVideo}
+                        style={{display:"none"}}
+                        id='text-input'
+                        />
+                        <label htmlFor="text-input">
+                            <IconButton color='primary' component="span" onClick={handleArticleClick}>
+                                <ArticleIcon/>
+                            </IconButton>
+                        </label>
+                        <span>Thought..</span>
+                    </div>
                 </div>
+                {showTextInput && ( 
+              <input
+                type="text"
+                name="post"
+                placeholder="Write your thought..."
+                className='outline-none w-full mb-3 mt-5 p-2 bg-transparent border border-[#3b4054] rounded-sm'
+                value={formik.values.post}
+                onChange={formik.handleChange}
+              />
+            )}
                 {selectedImage&& <div>
                     <img className='h-[10rem]' src={selectedImage} alt="" />
                 </div>}

@@ -50,8 +50,9 @@ export default function ProfileModal({open,handleClose}) {
     const formik=useFormik({
         initialValues:{
             profile:'',
-            name:"",
-            userName:""
+            name:null,
+            userName:null,
+            bio:null
         },
         onSubmit:(values,)=>{
             console.log("values",values)
@@ -80,7 +81,7 @@ export default function ProfileModal({open,handleClose}) {
             </div>
             <div>
             <div className='relative h-[15rem]'>
-                <img className='w-full h-full rounded-t-md' src={auth.user?.profile} alt='Nitro' />
+                <img className='w-full h-full rounded-t-md' src={auth.user?.profile} alt='No-profile' />
                 <div className='absolute inset-0 flex items-center justify-center '
                 >
                         <input type='file' accept='image/*'
@@ -122,7 +123,14 @@ export default function ProfileModal({open,handleClose}) {
                 value={formik.values.userName}
                 onChange={formik.handleChange}
                 />
-                
+                <TextField
+                fullWidth
+                id="bio"
+                name='bio'
+                label="bio"
+                value={formik.values.bio}
+                onChange={formik.handleChange}
+                />
             </div>
           </form>
         </Box>

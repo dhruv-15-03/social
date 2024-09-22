@@ -1,4 +1,4 @@
-import {  GET_FOLLOWING_SUCCESS, GET_POST_SUCCESS, GET_USERS_REELS_SUCCESS, GET_USERS_SUCCESS, PROFILE_REQUEST, PROFILE_SUCCESS } from "./profiletype"
+import {  GET_FOLLOWERS_SUCCESS, GET_FOLLOWING_SUCCESS, GET_POST_SUCCESS, GET_USERS_REELS_SUCCESS, GET_USERS_SUCCESS, PROFILE_REQUEST, PROFILE_SUCCESS } from "./profiletype"
 
 
 const initialState={
@@ -6,6 +6,7 @@ const initialState={
     loading:false,
     user:null,
     following:[],
+    followers:[],
     posts:[],
     users:[],
     userReel:[]
@@ -20,6 +21,8 @@ export const profilereducer=(state=initialState,action)=>{
             return {...state,user:action.payload,loading:false,error:null}
         case GET_FOLLOWING_SUCCESS:
             return{...state,following:action.payload,loading:false,error:null}
+        case GET_FOLLOWERS_SUCCESS:
+                return{...state,followers:action.payload,loading:false,error:null}
         case GET_USERS_SUCCESS:
             return{...state,users:action.payload,loading:false,error:null}
         case GET_USERS_REELS_SUCCESS:

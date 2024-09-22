@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createCommentAction, deletePostAction, likePostAction, savePostAction } from '../../Redux/Post/post.action';
 import { isLikedBy } from '../utils/isLiked';
 import { isSavedBy } from '../utils/isSaved';
+import TextDisplay from './TextDisplay';
 
 
 const PostCard = ({ item }) => {
@@ -105,7 +106,7 @@ const PostCard = ({ item }) => {
         className='w-full max-h-[30rem] object-cover object-top'
         src={item.image}
         alt=''
-      />:<video controls loop src={item.video} className='w-full h-full'></video>}
+      />:item.video?<video controls loop src={item.video} className='w-full h-full'></video>:<div className=''><TextDisplay item={item.post}/></div>}
       <CardContent>
         <Typography variant='body2' color='text.secondary'>
           {item.caption}

@@ -25,7 +25,7 @@ export const postReducer=(state=initialState,action)=>{
 
         case CREATE_POST_SUCCESS:
             return {
-                ...state,post:action.payload,posts:[action.payload,...state.post],loading:false,error:null
+                ...state,post:action.payload,posts:[action.payload,...state.posts],loading:false,error:null
             };
         case DELETE_POST_SUCCESS:
             return{

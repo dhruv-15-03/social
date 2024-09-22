@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ProfileModal from "./ProfileModal";
 import { likedPostAction, savedPostAction } from "../../Redux/Post/post.action";
 import { useParams } from "react-router-dom";
-import { follow, getFollowing, getPost, userPro, userReels } from "../../Redux/Profile/profileaction";
+import { follow, getFollowers, getFollowing, getPost, userPro, userReels } from "../../Redux/Profile/profileaction";
 import { isFollowBy } from "../Util2/isFollow.js";
 const tabs=[
     {value:"post",name:"Post"},
@@ -36,6 +36,7 @@ const Profile=()=>{
         }
         else if (value === "post") {
             dispatch((getFollowing(userId)))
+            dispatch((getFollowers(userId)))
             dispatch((getPost(userId)))
         }
         else if (value === "saved") {
@@ -91,11 +92,11 @@ const Profile=()=>{
                     </div>
                     <div className="flex items-center gap-5 py-3">
                         <span>{profile.posts.length+" Post"}</span>
-                        <span> {profile.user?.followers.length +" Followers"}</span>
+                        <span> {profile.followers?.length +" Followers"}</span>
                         <span>{profile.following?.length +" Following"}</span>
                     </div>
                     <div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                        <p>{profile.user?.bio}</p>
                     </div>
 
                 </div>

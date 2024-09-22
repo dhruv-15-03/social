@@ -11,7 +11,7 @@ export const loginUserAction=(loginData)=>async(dispatch)=>{
         console.log(data)
         dispatch({type:LOGIN_SUCCESS,payload:data.jwt})
     }catch (error) {
-        console.log("-----"+error)
+        console.log(error)
         dispatch({type:LOGIN_FAILURE,payload:error})
     }
  }
@@ -27,7 +27,7 @@ export const registerUserAction=(loginData)=>async(dispatch)=>{
         console.log(data)
         dispatch({type:REGISTER_SUCCESS,payload:data.jwt})
     }catch (error) {
-        console.log("-----"+error)
+        console.log(error)
         dispatch({type:REGISTER_FAILURE,payload:error})
     }
 }
@@ -72,7 +72,7 @@ export const searchUser=(query)=>async(dispatch)=>{
         console.log(data)
         dispatch({type:SEARCH_USER_SUCCESS,payload:data})
     }catch (error) {
-        console.log("---SUF--"+error)
+        console.log(error)
         dispatch({type:SEARCH_USER_FAILURE,payload:error})
     }
         

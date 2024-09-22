@@ -1,5 +1,5 @@
 import { api} from "../../config/api";
-import { GET_FOLLOW_FAILURE, GET_FOLLOW_REQUEST, GET_FOLLOW_SUCCESS, GET_FOLLOWING_FAILURE, GET_FOLLOWING_REQUEST, GET_FOLLOWING_SUCCESS, GET_POST_FAILURE, GET_POST_REQUEST, GET_POST_SUCCESS, GET_USERS_FAILURE, GET_USERS_REELS_FAILURE, GET_USERS_REELS_REQUEST, GET_USERS_REELS_SUCCESS, GET_USERS_REQUEST, GET_USERS_SUCCESS, PROFILE_FAILURE, PROFILE_REQUEST, PROFILE_SUCCESS } from "./profiletype";
+import { GET_FOLLOW_FAILURE, GET_FOLLOW_REQUEST, GET_FOLLOW_SUCCESS, GET_FOLLOWERS_FAILURE, GET_FOLLOWERS_REQUEST, GET_FOLLOWERS_SUCCESS, GET_FOLLOWING_FAILURE, GET_FOLLOWING_REQUEST, GET_FOLLOWING_SUCCESS, GET_POST_FAILURE, GET_POST_REQUEST, GET_POST_SUCCESS, GET_USERS_FAILURE, GET_USERS_REELS_FAILURE, GET_USERS_REELS_REQUEST, GET_USERS_REELS_SUCCESS, GET_USERS_REQUEST, GET_USERS_SUCCESS, PROFILE_FAILURE, PROFILE_REQUEST, PROFILE_SUCCESS } from "./profiletype";
 
 export const userPro=(userId)=>async(dispatch)=>{
     dispatch({type:PROFILE_REQUEST})
@@ -23,6 +23,18 @@ export const getFollowing=(userId)=>async(dispatch)=>{
     }catch (error) {
         console.log("---FWING--"+error)
         dispatch({type:GET_FOLLOWING_FAILURE,payload:error})
+    }
+        
+}
+export const getFollowers=(userId)=>async(dispatch)=>{
+    dispatch({type:GET_FOLLOWERS_REQUEST})
+    try{
+        const {data}=await api.get(`/api/user/getFollowers/${userId}`);
+        console.log("FOLLOwers list......",data)
+        dispatch({type:GET_FOLLOWERS_SUCCESS,payload:data})
+    }catch (error) {
+        console.log(error)
+        dispatch({type:GET_FOLLOWERS_FAILURE,payload:error})
     }
         
 }

@@ -9,7 +9,7 @@ export const createPostAction=(postData)=>async(dispatch)=>{
         console.log("created post",data)
     } catch (error) {
         dispatch({type:CREATE_POST_FAILURE,payload:error})
-        console.log("error"+error)
+        console.log(error)
     }
 };
 
