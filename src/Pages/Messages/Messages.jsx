@@ -32,7 +32,7 @@ const Messages = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        const sock = new SockJS("http://localhost:8081/ws");
+        const sock = new SockJS("https://social-app-backend.up.railway.app/ws");
         const stomp = Stomp.over(sock);
         setStompClient(stomp);
         stomp.connect({}, onConnect, onErr);
