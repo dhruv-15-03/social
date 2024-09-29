@@ -40,7 +40,7 @@ const MiddlePart = () => {
 
     useEffect(() => {
         dispatch(getAllPostAction());
-    }, [post.newComment]);
+    }, [post.newComment,post.posts]);
     const handleCloseRender = () =>setOpen(false);
     const handleOpenRender = () => {
         setOpen(true);
