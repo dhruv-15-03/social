@@ -58,6 +58,7 @@ const CreatePostModal = ({handleClose,open}) => {
             },
             onSubmit:(values)=>{
                 dispatch(createPostAction(values))
+                handleClose()
             }
         }
     )
