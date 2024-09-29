@@ -55,7 +55,6 @@ export default function ProfileModal({open,handleClose}) {
             bio:null
         },
         onSubmit:(values,)=>{
-            console.log("values",values)
             dispatch(updateProfileAction(values))
             handleClose()
         }

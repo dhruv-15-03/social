@@ -29,7 +29,6 @@ const PopularUser = ({item}) => {
   }, [profile, auth?.user?.id, item]);
 
   const handleClick=async()=>{
-    console.log('click')
     await dispatch(follow(item.id))
     setIsLiked((prevLiked) => !prevLiked);
   }
