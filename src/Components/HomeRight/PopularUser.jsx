@@ -5,10 +5,10 @@ import { red } from '@mui/material/colors';
 import { useNavigate } from 'react-router-dom';
 import { isFollowBy } from '../../Pages/Util2/isFollow';
 import { useDispatch, useSelector } from 'react-redux';
-import { follow } from '../../Redux/Profile/profileaction';
+import { follow,getFollowers } from '../../Redux/Profile/profileaction';
 
 const PopularUser = ({item}) => {
-  const {auth}=useSelector(store=>store)
+  const {auth,profile}=useSelector(store=>store)
   const dispatch=useDispatch()
   const navigate=useNavigate()
   const handleAvatarClick=()=>{
@@ -16,15 +16,21 @@ const PopularUser = ({item}) => {
   }
   const [isLiked, setIsLiked] = React.useState(false );
   useEffect(() => {
-    if (item.followers) {
-        const userIsFollowed = isFollowBy(item.followers, auth?.user?.id);
-        setIsLiked(userIsFollowed);
+    if (item) {
+      dispatch(getFollowers(item.id)); 
     }
-  }, []);
+  }, [dispatch, item,isLiked]);
 
-  const handleClick=()=>{
+  useEffect(() => {
+    if (item && profile) {
+      const userIsFollowed = isFollowBy(profile.followers, auth?.user?.id); 
+      setIsLiked(userIsFollowed);
+    }
+  }, [profile, auth?.user?.id, item]);
+
+  const handleClick=async()=>{
     console.log('click')
-    dispatch(follow(item.id))
+    await dispatch(follow(item.id))
     setIsLiked((prevLiked) => !prevLiked);
   }
 

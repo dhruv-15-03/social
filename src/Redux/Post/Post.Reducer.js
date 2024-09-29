@@ -21,7 +21,7 @@ export const postReducer=(state=initialState,action)=>{
         case GET_ALL_POST_REQUEST:
         case LIKE_POST_REQUEST:
         case SAVE_POST_REQUEST:
-            return {...state,error:null,loading:false};
+            return {...state,error:null,loading:true};
 
         case CREATE_POST_SUCCESS:
             return {

@@ -6,10 +6,8 @@ export const createPostAction=(postData)=>async(dispatch)=>{
     try {
         const {data}=await api.post("/api/post/new",postData)
         dispatch({type:CREATE_POST_SUCCESS,payload:data})
-        console.log("created post",data)
     } catch (error) {
         dispatch({type:CREATE_POST_FAILURE,payload:error})
-        console.log(error)
     }
 };
 
@@ -93,9 +91,7 @@ export const reels=()=>async(dispatch)=>{
     try {
         const {data}=await api.get(`/api/post/reels`)
         dispatch({type:REELS_SUCCESS,payload:data})
-        console.log("reels......",data)
     } catch (error) {
         dispatch({type:REELS_FAILURE,payload:error})
-        console.log("Error in reels", error)
     }
 };

@@ -4,7 +4,7 @@ import {ErrorMessage, Field, Form, Formik} from "formik";
 import React,{useState} from "react";
 import * as Yup from "yup"
 import {Button} from "@mui/material";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {loginUserAction} from "../../Redux/Auth/auth.actiion"
 import {date} from "yup";
 import { useNavigate } from "react-router-dom";
@@ -14,11 +14,11 @@ const validationSchema={email:Yup.string().required("Username is Required"),
 password:Yup.string().min(6,"Password must be at least 6 Characters Long").required("Password is required")}
 
 const Login=()=> {
+    const {auth}=useSelector(store=>store)
     const [formValue,setFormValue]=useState();
     const dispatch=useDispatch();
     const navigate=useNavigate();
     const handleSubmit=(values)=>{
-        console.log("Handle submit",values)
         dispatch(loginUserAction({data: values}))
     }
     return (
@@ -47,7 +47,7 @@ const Login=()=> {
 
                             </ErrorMessage>
                         </div>
-
+                        <p className="text-sm text-red-500">{auth.error!=null&&auth.error.response?.data?.message}</p>
                     </div>
                     <Button  sx={{padding:'0.8rem 0rem',backgroundColor:'orange',height:'20%'}} fullWidth type="submit" variant="container" color="primary" >Login</Button>
 

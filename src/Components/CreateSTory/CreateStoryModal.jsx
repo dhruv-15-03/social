@@ -7,8 +7,7 @@ import ArticleIcon from "@mui/icons-material/Article";
 
 import { uploadToCloudinary } from '../utils/uploadToCloudinary';
 import { useDispatch, useSelector } from 'react-redux';
-import {  createPostAction } from '../../Redux/Post/post.action';
-
+import {  createStoryAction } from '../../Redux/Auth/auth.actiion';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -21,47 +20,48 @@ const style = {
     borderRadius:"0.6rem",
     outline:"none"
   };
+  const CreateStoryModal = ({ handleClose, open }) => {
+    const { auth } = useSelector(store => store);
 
-const CreatePostModal = ({handleClose,open}) => {
-    
-    const {auth}=useSelector(store=>store)
-
-    const[selectedImage,setSelectedImage]=React.useState();
-    const[selectedVideo,setSelectedVideo]=React.useState();
-    const[isLoading,setIsLoading]=React.useState(false);
+    const [selectedImage, setSelectedImage] = React.useState();
+    const [selectedVideo, setSelectedVideo] = React.useState();
+    const [isLoading, setIsLoading] = React.useState(false);
     const [showTextInput, setShowTextInput] = React.useState(false);
-    const dispatch=useDispatch();
-    const handleSelectImage=async(event)=>{
+    const dispatch = useDispatch();
+
+    const handleSelectImage = async (event) => {
         setIsLoading(true);
-        const imageUrl=await uploadToCloudinary(event.target.files[0],"image")
+        const imageUrl = await uploadToCloudinary(event.target.files[0], "image");
         setSelectedImage(imageUrl);
-        setIsLoading(false)
-        formik.setFieldValue("image",imageUrl)
-    }
-    const handleSelectVideo=async(event)=>{
+        setIsLoading(false);
+        formik.setFieldValue("image", imageUrl);
+    };
+
+    const handleSelectVideo = async (event) => {
         setIsLoading(true);
-        const videoUrl=await uploadToCloudinary(event.target.files[0],"video")
+        const videoUrl = await uploadToCloudinary(event.target.files[0], "video");
         setSelectedVideo(videoUrl);
-        setIsLoading(false)
-        formik.setFieldValue("video",videoUrl)
-    }
+        setIsLoading(false);
+        formik.setFieldValue("video", videoUrl);
+    };
+
     const handleArticleClick = () => {
-        setShowTextInput(prev => !prev); 
-      };
-    const formik=useFormik(
-        {
-            initialValues:{
-                caption:"",
-                image:"",
-                video:"",
-                post:"",
-            },
-            onSubmit:(values)=>{
-                dispatch(createPostAction(values))
-            }
+        setShowTextInput(prev => !prev);
+    };
+
+    const formik = useFormik({
+        initialValues: {
+            content: null,
+            image:null,
+            video:null,
+        },
+        onSubmit:  (values) => {
+            dispatch(createStoryAction(values));
+            setSelectedImage(null)
+            setSelectedVideo(null)
+            handleClose(); 
         }
-    )
-    
+    });
   return (
     <Modal
         open={open}
@@ -82,9 +82,6 @@ const CreatePostModal = ({handleClose,open}) => {
                     </div>
 
                 </div>
-                <textarea className='outline-none w-full mt-5 p-2 bg-transparent border border-[#3b4054] rounded-sm' name="caption" placeholder='write caption' rows="4" value={formik.values.caption} onChange={formik.handleChange}>
-
-                </textarea>
                 <div className='flex items-center mt-5 space-x-5'>
                     <div>
                         <input type='file' accept='image/*'
@@ -128,10 +125,10 @@ const CreatePostModal = ({handleClose,open}) => {
                 {showTextInput && ( 
               <input
                 type="text"
-                name="post"
+                name="content"
                 placeholder="Write your thought..."
                 className='outline-none w-full mb-3 mt-5 p-2 bg-transparent border border-[#3b4054] rounded-sm'
-                value={formik.values.post}
+                value={formik.values.content}
                 onChange={formik.handleChange}
               />
             )}
@@ -142,7 +139,7 @@ const CreatePostModal = ({handleClose,open}) => {
   <video controls src={selectedVideo} className='w-full h-full'></video></div>
 )}
                 <div className='flex justify-end w-full'>
-                    <Button variant='contained' type='submit' sx={{borderRadius:"1.5rem"}} >Post</Button>
+                    <Button variant='contained' type='submit' sx={{borderRadius:"1.5rem"}} >Upload</Button>
                 </div>
             </div>
 
@@ -159,4 +156,4 @@ const CreatePostModal = ({handleClose,open}) => {
   )
 }
 
-export default CreatePostModal
+export default CreateStoryModal

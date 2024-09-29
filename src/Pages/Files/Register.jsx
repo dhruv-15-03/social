@@ -3,20 +3,26 @@ import {ErrorMessage, Field, Form, Formik} from "formik";
 import React,{useState} from "react";
 import * as Yup from "yup"
 import {Button} from "@mui/material";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {registerUserAction} from "../../Redux/Auth/auth.actiion";
 import { useNavigate } from "react-router-dom";
 
 const initialValues={name:"",email:"",userName:"",password:"",gender:""}
-const validationSchema={email:Yup.string().required("Username is Required"),
-    password:Yup.string().min(6,"Password must be at least 6 Characters Long").required("Password is required")}
-
+const validationSchema = Yup.object().shape({
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters long")
+      .required("Password is required"),
+  });
 
 
 const Register=()=> {
+    const {auth}=useSelector(store=>store)
+
     const handleSubmit=(values)=>{
         values.gender=gender
-        console.log("Handle submit",values)
         dispatch(registerUserAction({data:values}))
     };
     const navigate=useNavigate();
@@ -41,14 +47,14 @@ const Register=()=> {
                             <Field as={TextField} name="name" placeholder="Name" type="text" variant="outlined"
                                    fullWidth/>
                             <ErrorMessage name="name" component="div" className="text-red-500">
-
+                                Invalid Credentials .....
                             </ErrorMessage>
                         </div>
                         <div className="p-1 ">
                             <Field as={TextField} name="email" placeholder="Email" type="email" variant="outlined"
                                    fullWidth/>
                             <ErrorMessage name="email" component="div" className="text-red-500">
-
+                                {auth.error}
                             </ErrorMessage>
                         </div>
                         <div className="p-1 ">
@@ -81,14 +87,16 @@ const Register=()=> {
                                 </ErrorMessage>
                             </RadioGroup>
                         </div>
-
+                        <p className="text-sm text-red-500">{auth.error!=null&&auth.error.response?.data?.message}</p>
                     </div>
                     <Button sx={{padding: '0.8rem 0rem', backgroundColor: 'orange', height: '20%'}} fullWidth
                             type="submit" variant="container" color="primary">Register</Button>
 
                 </Form>
             </Formik>
+
                 <div className="flex items-center justify-center gap-2 pt-5">
+                    
                     <p>Already have an account??</p>
                     <Button onClick={()=>navigate("/login")}>Login</Button>
                 </div>

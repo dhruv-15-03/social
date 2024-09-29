@@ -11,7 +11,6 @@ const SearchUser2 = () => {
     const handleSearchUser=(e)=>{
         setUserName(e.target.value)
         dispatch(searchUser(userName))
-        console.log(auth.searchUser)
     }
     const handleClick=(id)=>{
         dispatch(createChat(id))
