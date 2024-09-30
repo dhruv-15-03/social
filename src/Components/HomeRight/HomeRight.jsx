@@ -26,7 +26,7 @@ const HomeRight=()=>{
 
             </div>
             <div className="">
-                {usersToShow?.map((item,index)=><PopularUser key={index} item={item}/>)}
+                {usersToShow?.map((item)=><PopularUser key={item.id} item={item}/>)}
                 
             </div>
             </Card>

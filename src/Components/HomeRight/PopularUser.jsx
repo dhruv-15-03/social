@@ -1,56 +1,56 @@
-import React, { useEffect } from 'react'
-import {Avatar, Button} from '@mui/material';
-import {CardHeader} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Avatar, Button } from '@mui/material';
+import { CardHeader } from '@mui/material';
 import { red } from '@mui/material/colors';
 import { useNavigate } from 'react-router-dom';
 import { isFollowBy } from '../../Pages/Util2/isFollow';
 import { useDispatch, useSelector } from 'react-redux';
-import { follow,getFollowers } from '../../Redux/Profile/profileaction';
+import { follow, getFollowers } from '../../Redux/Profile/profileaction';
 
-const PopularUser = ({item}) => {
-  const {auth,profile}=useSelector(store=>store)
-  const dispatch=useDispatch()
-  const navigate=useNavigate()
-  const handleAvatarClick=()=>{
-    navigate(`/profile/${item.id}`)
-  }
-  const [isLiked, setIsLiked] = React.useState(false );
+const PopularUser = ({ item }) => {
+  const { auth, profile } = useSelector(store => store);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [isLiked, setIsLiked] = useState(false);
+  const [loading, setLoading] = useState(true); 
   useEffect(() => {
     if (item) {
-      dispatch(getFollowers(item.id)); 
+      setLoading(true); 
+      dispatch(getFollowers(item.id)).then(() => {
+        setLoading(false);
+        const userIsFollowed = isFollowBy(profile.followers, auth?.user?.id);
+        setIsLiked(userIsFollowed);
+      });
     }
-  }, [dispatch, item,isLiked]);
+  }, [dispatch, item.id]);
+  const handleAvatarClick = () => {
+    navigate(`/profile/${item.id}`);
+  };
 
-  useEffect(() => {
-    if (item && profile) {
-      const userIsFollowed = isFollowBy(profile.followers, auth?.user?.id); 
-      setIsLiked(userIsFollowed);
-    }
-  }, [profile, auth?.user?.id, item]);
-
-  const handleClick=async()=>{
-    await dispatch(follow(item.id))
+  const handleClick = async () => {
+    await dispatch(follow(item.id));
     setIsLiked((prevLiked) => !prevLiked);
-  }
+  };
 
   return (
     <div>
-        <CardHeader
+      <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500],cursor:'pointer' }} aria-label="recipe" onClick={() => handleAvatarClick(item.id)}>
-          {item.profile?item.profile:item.name[0]}
+          <Avatar sx={{ bgcolor: red[500], cursor: 'pointer' }} aria-label="recipe" onClick={handleAvatarClick}>
+            {item.profile ? item.profile : item.name[0]}
           </Avatar>
         }
         action={
-          <Button size='small' onClick={handleClick}>
-            {isLiked?'UnFollow':'Follow'}
+          <Button size="small" onClick={handleClick} disabled={loading}>
+            { isLiked ? 'Unfollow' : 'Follow'}
           </Button>
         }
         title={item.name}
         subheader={item.userName}
       />
     </div>
-  )
-}
+  );
+};
 
-export default PopularUser
+export default PopularUser;
+
