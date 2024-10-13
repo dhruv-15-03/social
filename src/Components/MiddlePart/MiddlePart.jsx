@@ -63,7 +63,7 @@ const MiddlePart = () => {
                                 }}
                                 onClick={handleOpenRender}
                             >
-                                {auth.user?.profile && auth.user.profile}
+                                {auth.user?.profile}
                             </Avatar>
                             <AddIcon
                                 onClick={handleOpenCreateStoryModal}
