@@ -32,7 +32,7 @@ const Messages = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        const sock = new SockJS("https://social-backend-java-dhr.netlify.app/ws");
+        const sock = new SockJS("https://thought-0hcs.onrender.com/ws");
         const stomp = Stomp.over(sock);
         setStompClient(stomp);
         stomp.connect({}, onConnect, onErr);
