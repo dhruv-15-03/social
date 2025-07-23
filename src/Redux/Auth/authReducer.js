@@ -5,6 +5,7 @@ import {
     GET_PROFILE_PIC_SUCCESS,
     GET_PROFILE_REQUEST,
     GET_PROFILE_SUCCESS,
+    GET_PROFILE_FAILURE,
     LOGIN_FAILURE,
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
@@ -15,7 +16,9 @@ import {
     SELF_STORY_SUCCESS,
     UPDATE_PROFILE_SUCCESS,
     USER_STORY_SUCCESS,
-    USERS_FOR_STORY_SUCCESS
+    USERS_FOR_STORY_SUCCESS,
+    RESTORE_SESSION,
+    CLEAR_SESSION
 } from "./auth.action.type";
 
 const initialState={
@@ -59,6 +62,12 @@ export const authReducer=(state=initialState,action)=>{
         case CREATE_STORY_FAILURE:
         case REGISTER_FAILURE:
             return {...state,loading: false,error: action.payload}
+        case GET_PROFILE_FAILURE:
+            return {...state,loading: false,error: action.payload,jwt:null,user:null}
+        case RESTORE_SESSION:
+            return {...state,jwt:action.payload,error:null}
+        case CLEAR_SESSION:
+            return {...state,jwt:null,user:null,error:null,loading:false}
         default:
             return state;
     }
