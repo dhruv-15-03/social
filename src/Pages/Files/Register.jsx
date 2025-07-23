@@ -1,97 +1,345 @@
-import {FormControlLabel, Radio, RadioGroup, TextField} from "@mui/material";
-import {ErrorMessage, Field, Form, Formik} from "formik";
-import React,{useState} from "react";
-import {Button} from "@mui/material";
-import {useDispatch, useSelector} from "react-redux";
-import {registerUserAction} from "../../Redux/Auth/auth.actiion";
+import React, { useState, useEffect } from 'react';
+import { FormControlLabel, Radio, RadioGroup, TextField, Button, Alert, Box } from "@mui/material";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUserAction, getProfileAction } from "../../Redux/Auth/auth.actiion";
 import { useNavigate } from "react-router-dom";
 
-const initialValues={name:"",email:"",userName:"",password:"",gender:""}
+const initialValues = { name: "", email: "", userName: "", password: "", gender: "" }
 
+const Register = () => {
+    const { auth } = useSelector(store => store);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [gender, setGender] = useState("");
 
-const Register=()=> {
-    const {auth}=useSelector(store=>store)
+    // Enhanced authentication check similar to Login
+    useEffect(() => {
+        if (auth.jwt && auth.user && !auth.loading) {
+            console.log('✅ User authenticated, redirecting to home');
+            navigate('/', { replace: true });
+            return;
+        }
 
-    const handleSubmit=(values)=>{
-        values.gender=gender
-        dispatch(registerUserAction({data:values}))
+        if (auth.jwt && !auth.user && !auth.loading) {
+            console.log('🔄 JWT found, fetching user profile');
+            dispatch(getProfileAction(auth.jwt));
+        }
+    }, [auth.jwt, auth.user, auth.loading, dispatch, navigate]);
+
+    const handleSubmit = async (values, { setSubmitting }) => {
+        try {
+            values.gender = gender;
+            await dispatch(registerUserAction({ data: values }));
+        } catch (error) {
+            console.error('Registration failed:', error);
+        } finally {
+            setSubmitting(false);
+        }
     };
-    const navigate=useNavigate();
-    const dispatch=useDispatch();
-    const[gender,setGender]=useState("")
-    const handleChange=(event)=> {
+
+    const handleGenderChange = (event) => {
         setGender(event.target.value);
     };
     return (
+        <Box sx={{ 
+            maxWidth: 400, 
+            mx: 'auto', 
+            p: 2.5,
+            mt: 2,
+            mb: 2,
+            boxShadow: 3,
+            borderRadius: 2,
+            bgcolor: 'background.paper',
+            minHeight: 'fit-content'
+        }}>
+            {/* Register Header */}
+            <Box sx={{ textAlign: 'center', mb: 2.5 }}>
+                <h2 style={{ margin: 0, color: '#333', fontWeight: 600, fontSize: '24px' }}>
+                    Create Account
+                </h2>
+                <p style={{ margin: '6px 0 0 0', color: '#666', fontSize: '14px' }}>
+                    Join us today
+                </p>
+            </Box>
 
-        <>
             <Formik
                 onSubmit={handleSubmit}
-                // validationSchema={validationSchema}
                 initialValues={initialValues}
             >
+                {({ isSubmitting }) => (
+                    <Form className="space-y-3">
+                        <div className="space-y-3">
+                            <div>
+                                <Field 
+                                    as={TextField}
+                                    name="name"
+                                    label="Full Name"
+                                    type="text"
+                                    variant="filled"
+                                    fullWidth
+                                    size="small"
+                                    disabled={isSubmitting || auth.loading}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                    sx={{
+                                        '& .MuiFilledInput-root': {
+                                            borderRadius: '8px',
+                                            backgroundColor: '#f8fafc',
+                                            border: '1.5px solid #e0e0e0',
+                                            transition: 'border-color 0.2s',
+                                            boxShadow: 'none',
+                                            '&:hover': {
+                                                backgroundColor: '#f3f3f3',
+                                                borderColor: '#ff6b35',
+                                            },
+                                            '&.Mui-focused': {
+                                                backgroundColor: '#fff',
+                                                borderColor: '#ff6b35',
+                                                boxShadow: '0 0 0 3px rgba(255,107,53,0.08)',
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: '#666',
+                                            fontWeight: 500,
+                                            '&.Mui-focused': {
+                                                color: '#ff6b35',
+                                            },
+                                        },
+                                    }}
+                                />
+                                <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
 
+                            <div>
+                                <Field 
+                                    as={TextField}
+                                    name="email"
+                                    label="Email Address"
+                                    type="email"
+                                    variant="filled"
+                                    fullWidth
+                                    size="small"
+                                    disabled={isSubmitting || auth.loading}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                    sx={{
+                                        '& .MuiFilledInput-root': {
+                                            borderRadius: '8px',
+                                            backgroundColor: '#f8fafc',
+                                            border: '1.5px solid #e0e0e0',
+                                            transition: 'border-color 0.2s',
+                                            boxShadow: 'none',
+                                            '&:hover': {
+                                                backgroundColor: '#f3f3f3',
+                                                borderColor: '#ff6b35',
+                                            },
+                                            '&.Mui-focused': {
+                                                backgroundColor: '#fff',
+                                                borderColor: '#ff6b35',
+                                                boxShadow: '0 0 0 3px rgba(255,107,53,0.08)',
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: '#666',
+                                            fontWeight: 500,
+                                            '&.Mui-focused': {
+                                                color: '#ff6b35',
+                                            },
+                                        },
+                                    }}
+                                />
+                                <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
 
-                <Form className="space-y-5 ">
-                    <div className="space-y-5 ">
-                        <div className="p-1 ">
-                            <Field as={TextField} name="name" placeholder="Name" type="text" variant="outlined"
-                                   fullWidth/>
-                            <ErrorMessage name="name" component="div" className="text-red-500">
-                                Invalid Credentials .....
-                            </ErrorMessage>
+                            <div>
+                                <Field 
+                                    as={TextField}
+                                    name="userName"
+                                    label="Username"
+                                    type="text"
+                                    variant="filled"
+                                    fullWidth
+                                    size="small"
+                                    disabled={isSubmitting || auth.loading}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                    sx={{
+                                        '& .MuiFilledInput-root': {
+                                            borderRadius: '8px',
+                                            backgroundColor: '#f8fafc',
+                                            border: '1.5px solid #e0e0e0',
+                                            transition: 'border-color 0.2s',
+                                            boxShadow: 'none',
+                                            '&:hover': {
+                                                backgroundColor: '#f3f3f3',
+                                                borderColor: '#ff6b35',
+                                            },
+                                            '&.Mui-focused': {
+                                                backgroundColor: '#fff',
+                                                borderColor: '#ff6b35',
+                                                boxShadow: '0 0 0 3px rgba(255,107,53,0.08)',
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: '#666',
+                                            fontWeight: 500,
+                                            '&.Mui-focused': {
+                                                color: '#ff6b35',
+                                            },
+                                        },
+                                    }}
+                                />
+                                <ErrorMessage name="userName" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+
+                            <div>
+                                <Field 
+                                    as={TextField}
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    variant="filled"
+                                    fullWidth
+                                    size="small"
+                                    disabled={isSubmitting || auth.loading}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                    sx={{
+                                        '& .MuiFilledInput-root': {
+                                            borderRadius: '8px',
+                                            backgroundColor: '#f8fafc',
+                                            border: '1.5px solid #e0e0e0',
+                                            transition: 'border-color 0.2s',
+                                            boxShadow: 'none',
+                                            '&:hover': {
+                                                backgroundColor: '#f3f3f3',
+                                                borderColor: '#ff6b35',
+                                            },
+                                            '&.Mui-focused': {
+                                                backgroundColor: '#fff',
+                                                borderColor: '#ff6b35',
+                                                boxShadow: '0 0 0 3px rgba(255,107,53,0.08)',
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: '#666',
+                                            fontWeight: 500,
+                                            '&.Mui-focused': {
+                                                color: '#ff6b35',
+                                            },
+                                        },
+                                    }}
+                                />
+                                <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+
+                            {/* Gender Selection - Compact Design */}
+                            <Box sx={{ mt: 1.5 }}>
+                                <p style={{ margin: '0 0 6px 0', color: '#333', fontSize: '13px', fontWeight: 500 }}>
+                                    Gender
+                                </p>
+                                <RadioGroup
+                                    row
+                                    name="gender"
+                                    value={gender}
+                                    onChange={handleGenderChange}
+                                    sx={{
+                                        '& .MuiFormControlLabel-label': {
+                                            fontSize: '13px',
+                                        },
+                                        '& .MuiRadio-root.Mui-checked': {
+                                            color: '#ff6b35',
+                                        },
+                                        '& .MuiRadio-root': {
+                                            padding: '6px',
+                                        }
+                                    }}
+                                >
+                                    <FormControlLabel 
+                                        value="female" 
+                                        control={<Radio size="small" />} 
+                                        label="Female" 
+                                        disabled={isSubmitting || auth.loading}
+                                    />
+                                    <FormControlLabel 
+                                        value="male" 
+                                        control={<Radio size="small" />} 
+                                        label="Male" 
+                                        disabled={isSubmitting || auth.loading}
+                                    />
+                                    <FormControlLabel 
+                                        value="other" 
+                                        control={<Radio size="small" />} 
+                                        label="Other" 
+                                        disabled={isSubmitting || auth.loading}
+                                    />
+                                </RadioGroup>
+                            </Box>
+                            
+                            {/* Enhanced error display */}
+                            {auth.error && (
+                                <Alert severity="error" sx={{ mt: 1.5, borderRadius: 2 }}>
+                                    {auth.error.response?.data?.message || 
+                                     auth.error.message || 
+                                     'Registration failed. Please try again.'}
+                                </Alert>
+                            )}
                         </div>
-                        <div className="p-1 ">
-                            <Field as={TextField} name="email" placeholder="Email" type="email" variant="outlined"
-                                   fullWidth/>
-                            <ErrorMessage name="email" component="div" className="text-red-500">
-                                {auth.error}
-                            </ErrorMessage>
-                        </div>
-                        <div className="p-1 ">
-                            <Field as={TextField} name="userName" placeholder="Username" type="text" variant="outlined"
-                                   fullWidth/>
-                            <ErrorMessage name="username" component="div" className="text-red-500">
-
-                            </ErrorMessage>
-                        </div>
-                        <div className="p-1 ">
-                            <Field as={TextField} name="password" placeholder="Password" type="password"
-                                   variant="outlined"
-                                   fullWidth/>
-                            <ErrorMessage name="password" component="div" className="text-red-500">
-
-                            </ErrorMessage>
-                        </div>
-                        <div>
-                            <RadioGroup
-                                row
-                                aria-labelledby="Gender"
-                                name="gender"
-                                onChange={handleChange}
-                            >
-                                <FormControlLabel value="female" control={<Radio />} label="Female" />
-                                <FormControlLabel value="male" control={<Radio />} label="Male" />
-                                <FormControlLabel value="other" control={<Radio />} label="Other" />
-                                <ErrorMessage name="gender" component="div" className="text-red-500">
-
-                                </ErrorMessage>
-                            </RadioGroup>
-                        </div>
-                        <p className="text-sm text-red-500">{auth.error!=null&&auth.error.response?.data?.message}</p>
-                    </div>
-                    <Button sx={{padding: '0.8rem 0rem', backgroundColor: 'orange', height: '20%'}} fullWidth
-                            type="submit" variant="container" color="primary">Register</Button>
-
-                </Form>
+                        
+                        <Button 
+                            sx={{ 
+                                padding: '10px 0', 
+                                backgroundColor: '#ff6b35',
+                                fontSize: '16px',
+                                fontWeight: 600,
+                                textTransform: 'none',
+                                borderRadius: 2,
+                                mt: 2,
+                                '&:hover': {
+                                    backgroundColor: '#e55a2b'
+                                },
+                                '&:disabled': {
+                                    backgroundColor: 'grey.300',
+                                    color: 'grey.500'
+                                }
+                            }} 
+                            fullWidth 
+                            type="submit" 
+                            variant="contained"
+                            disabled={isSubmitting || auth.loading}
+                        >
+                            {isSubmitting || auth.loading ? 'Creating Account...' : 'Create Account'}
+                        </Button>
+                    </Form>
+                )}
             </Formik>
-
-                <div className="flex items-center justify-center gap-2 pt-5">
-                    
-                    <p>Already have an account??</p>
-                    <Button onClick={()=>navigate("/login")}>Login</Button>
-                </div>
-        </>
+            
+            <Box sx={{ textAlign: 'center', mt: 2, pt: 1.5, borderTop: '1px solid #eee' }}>
+                <p style={{ margin: '0 0 8px 0', color: '#666', fontSize: '13px' }}>
+                    Already have an account?
+                </p>
+                <Button 
+                    onClick={() => navigate("/login")}
+                    disabled={auth.loading}
+                    sx={{
+                        textTransform: 'none',
+                        fontWeight: 600,
+                        color: '#ff6b35',
+                        fontSize: '14px',
+                        '&:hover': {
+                            backgroundColor: 'rgba(255, 107, 53, 0.1)'
+                        }
+                    }}
+                >
+                    Sign In
+                </Button>
+            </Box>
+        </Box>
     );
 }
 

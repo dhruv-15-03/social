@@ -94,7 +94,6 @@ const Messages = () => {
         setSelectedImage("");
         dispatch(createMessage({ message: newMessage, sendMessageToServer }));
     };
-
     const sendMessageToServer = (nmessage) => {
         if (stompClient && stompClient.connected && nmessage) {
             stompClient.publish({

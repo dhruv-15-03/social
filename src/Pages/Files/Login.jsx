@@ -4,7 +4,6 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUserAction, getProfileAction } from "../../Redux/Auth/auth.actiion";
 import { useNavigate } from "react-router-dom";
-import envConfig from "../../config/environment";
 
 const initialValues = { username: "", password: "" };
 
@@ -22,7 +21,6 @@ const Login = () => {
             return;
         }
 
-        // If we have JWT but no user data, try to fetch profile
         if (auth.jwt && !auth.user && !auth.loading) {
             console.log('🔄 JWT found, fetching user profile');
             dispatch(getProfileAction(auth.jwt));
@@ -40,53 +38,116 @@ const Login = () => {
     };
 
     return (
-        <Box sx={{ maxWidth: 400, mx: 'auto', p: 2 }}>
-            {/* Show authentication status for debugging */}
-            {envConfig.app.isDevelopment && (
-                <Box sx={{ mb: 2, p: 1, bgcolor: 'info.light', borderRadius: 1 }}>
-                    <p style={{ fontSize: '12px', margin: 0 }}>
-                        Debug: JWT={auth.jwt ? '✅' : '❌'} | 
-                        User={auth.user ? '✅' : '❌'} | 
-                        Loading={auth.loading ? '🔄' : '✅'}
-                    </p>
-                </Box>
-            )}
+        <Box sx={{ 
+            maxWidth: 400, 
+            mx: 'auto', 
+            p: 3,
+            mt: 4,
+            boxShadow: 3,
+            borderRadius: 2,
+            bgcolor: 'background.paper'
+        }}>
+            
+            <Box sx={{ textAlign: 'center', mb: 3 }}>
+                <h2 style={{ margin: 0, color: '#333', fontWeight: 600 }}>
+                    Welcome Back
+                </h2>
+                <p style={{ margin: '8px 0 0 0', color: '#666', fontSize: '14px' }}>
+                    Sign in to your account
+                </p>
+            </Box>
 
             <Formik
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
             >
                 {({ isSubmitting }) => (
-                    <Form className="space-y-5">
-                        <div className="space-y-5">
-                            <div className="p-1">
+                    <Form className="space-y-4">
+                        <div className="space-y-4">
+                            <div>
                                 <Field 
-                                    as={TextField} 
-                                    name="username" 
-                                    placeholder="Username" 
-                                    type="text" 
-                                    variant="outlined"
+                                    as={TextField}
+                                    name="username"
+                                    label="Username"
+                                    type="text"
+                                    variant="filled"
                                     fullWidth
                                     disabled={isSubmitting || auth.loading}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                    sx={{
+                                        '& .MuiFilledInput-root': {
+                                            borderRadius: '8px',
+                                            backgroundColor: '#f8fafc',
+                                            border: '1.5px solid #e0e0e0',
+                                            transition: 'border-color 0.2s',
+                                            boxShadow: 'none',
+                                            '&:hover': {
+                                                backgroundColor: '#f3f3f3',
+                                                borderColor: '#ff6b35',
+                                            },
+                                            '&.Mui-focused': {
+                                                backgroundColor: '#fff',
+                                                borderColor: '#ff6b35',
+                                                boxShadow: '0 0 0 3px rgba(255,107,53,0.08)',
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: '#666',
+                                            fontWeight: 500,
+                                            '&.Mui-focused': {
+                                                color: '#ff6b35',
+                                            },
+                                        },
+                                    }}
                                 />
-                                <ErrorMessage name="username" component="div" className="text-red-500" />
+                                <ErrorMessage name="username" component="div" className="text-red-500 text-sm mt-1" />
                             </div>
-                            <div className="p-1">
+                            <div>
                                 <Field 
-                                    as={TextField} 
-                                    name="password" 
-                                    placeholder="Password" 
-                                    type="password" 
-                                    variant="outlined"
+                                    as={TextField}
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    variant="filled"
                                     fullWidth
                                     disabled={isSubmitting || auth.loading}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                    sx={{
+                                        '& .MuiFilledInput-root': {
+                                            borderRadius: '8px',
+                                            backgroundColor: '#f8fafc',
+                                            border: '1.5px solid #e0e0e0',
+                                            transition: 'border-color 0.2s',
+                                            boxShadow: 'none',
+                                            '&:hover': {
+                                                backgroundColor: '#f3f3f3',
+                                                borderColor: '#ff6b35',
+                                            },
+                                            '&.Mui-focused': {
+                                                backgroundColor: '#fff',
+                                                borderColor: '#ff6b35',
+                                                boxShadow: '0 0 0 3px rgba(255,107,53,0.08)',
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: '#666',
+                                            fontWeight: 500,
+                                            '&.Mui-focused': {
+                                                color: '#ff6b35',
+                                            },
+                                        },
+                                    }}
                                 />
-                                <ErrorMessage name="password" component="div" className="text-red-500" />
+                                <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
                             </div>
                             
                             {/* Enhanced error display */}
                             {auth.error && (
-                                <Alert severity="error" sx={{ mt: 2 }}>
+                                <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>
                                     {auth.error.response?.data?.message || 
                                      auth.error.message || 
                                      'Login failed. Please try again.'}
@@ -96,34 +157,50 @@ const Login = () => {
                         
                         <Button 
                             sx={{ 
-                                padding: '0.8rem 0rem', 
-                                backgroundColor: 'orange', 
-                                height: '20%',
+                                padding: '12px 0', 
+                                backgroundColor: '#ff6b35',
+                                fontSize: '16px',
+                                fontWeight: 600,
+                                textTransform: 'none',
+                                borderRadius: 2,
+                                '&:hover': {
+                                    backgroundColor: '#e55a2b'
+                                },
                                 '&:disabled': {
-                                    backgroundColor: 'grey.300'
+                                    backgroundColor: 'grey.300',
+                                    color: 'grey.500'
                                 }
                             }} 
                             fullWidth 
                             type="submit" 
-                            variant="contained" 
-                            color="primary" 
+                            variant="contained"
                             disabled={isSubmitting || auth.loading}
                         >
-                            {isSubmitting || auth.loading ? 'Logging in...' : 'Login'}
+                            {isSubmitting || auth.loading ? 'Signing in...' : 'Sign In'}
                         </Button>
                     </Form>
                 )}
             </Formik>
             
-            <div className="flex items-center justify-center gap-2 pt-5">
-                <p>If you don't have account</p>
+            <Box sx={{ textAlign: 'center', mt: 3, pt: 2, borderTop: '1px solid #eee' }}>
+                <p style={{ margin: '0 0 10px 0', color: '#666', fontSize: '14px' }}>
+                    Don't have an account?
+                </p>
                 <Button 
                     onClick={() => navigate("/register")}
                     disabled={auth.loading}
+                    sx={{
+                        textTransform: 'none',
+                        fontWeight: 600,
+                        color: '#ff6b35',
+                        '&:hover': {
+                            backgroundColor: 'rgba(255, 107, 53, 0.1)'
+                        }
+                    }}
                 >
-                    Register
+                    Create Account
                 </Button>
-            </div>
+            </Box>
         </Box>
     );
 };

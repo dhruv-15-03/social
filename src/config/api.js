@@ -1,10 +1,8 @@
 import axios from "axios";
 import envConfig from "./environment";
 
-// API Base URL from environment configuration
 export const API_BASE_URL = envConfig.api.baseUrl;
 
-// Create axios instance with professional configuration
 export const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: envConfig.api.timeout,
@@ -14,7 +12,6 @@ export const api = axios.create({
   },
 });
 
-// Request interceptor for adding authentication token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(envConfig.auth.storageKey);
@@ -22,7 +19,6 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     
-    // Log requests in development
     if (envConfig.app.isDevelopment) {
       console.log(`📡 API Request: ${config.method?.toUpperCase()} ${config.url}`, config);
     }
@@ -37,10 +33,8 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor for handling common responses and errors
 api.interceptors.response.use(
   (response) => {
-    // Log successful responses in development
     if (envConfig.app.isDevelopment) {
       console.log(`✅ API Response: ${response.config.url}`, response.data);
     }
@@ -48,13 +42,11 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Handle common HTTP errors
     if (error.response) {
       const { status, data } = error.response;
       
       switch (status) {
         case 401:
-          // Unauthorized - clear token and redirect to login
           console.warn('🔐 Unauthorized access - clearing session');
           localStorage.removeItem(envConfig.auth.storageKey);
           if (window.location.pathname !== '/auth') {
@@ -80,10 +72,8 @@ api.interceptors.response.use(
           }
       }
     } else if (error.request) {
-      // Network error
       console.error('🌐 Network Error:', error.message);
     } else {
-      // Other error
       if (envConfig.features.errorLogging) {
         console.error('❌ Request Setup Error:', error.message);
       }
@@ -93,17 +83,13 @@ api.interceptors.response.use(
   }
 );
 
-// Helper functions for different HTTP methods
 export const apiGet = (url, config = {}) => api.get(url, config);
 export const apiPost = (url, data, config = {}) => api.post(url, data, config);
 export const apiPut = (url, data, config = {}) => api.put(url, data, config);
 export const apiDelete = (url, config = {}) => api.delete(url, config);
 
-// API helper functions
 export const apiHelpers = {
-  /**
-   * Upload file with progress tracking
-   */
+  
   uploadFile: async (file, onProgress) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -121,9 +107,7 @@ export const apiHelpers = {
     });
   },
 
-  /**
-   * Retry failed requests
-   */
+  
   retryRequest: async (requestConfig, maxRetries = envConfig.api.retryCount) => {
     let lastError;
     
@@ -143,14 +127,10 @@ export const apiHelpers = {
     throw lastError;
   },
 
-  /**
-   * Cancel pending requests
-   */
+  
   cancelToken: () => axios.CancelToken.source(),
 
-  /**
-   * Health check
-   */
+  
   healthCheck: () => api.get('/health'),
 };
 
