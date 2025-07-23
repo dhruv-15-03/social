@@ -1,5 +1,5 @@
 import React from "react";
-import Grid from "@mui/system/Unstable_Grid";
+import { Grid } from "@mui/material";
 import img from "../../img/Screenshot 2024-07-21 163336.png"
 import i2 from "../../img/pngtree-background-frame-geometric-with-neon-glow-and-bright-colors-can-be-image_339492.jpg"
 // import Card from 'react-bootstrap/Card';

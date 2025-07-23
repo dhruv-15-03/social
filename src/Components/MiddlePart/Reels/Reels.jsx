@@ -7,10 +7,8 @@ const Reels=()=>{
     
     const {post}=useSelector(store=>store)
     useEffect(() => {
-       {
-            dispatch(reels());
-        }
-    },  []);
+        dispatch(reels());
+    }, [dispatch]);
     return(
         <div className="items-center w-full bg-black bg">
             {post.reels?.map((item)=><PostCard item={item}/>)}

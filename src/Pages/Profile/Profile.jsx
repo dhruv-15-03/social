@@ -86,7 +86,7 @@ const Profile=()=>{
                     >
                         {profile.user?.name[0]}
                     </Avatar>
-                    {(userId==auth.user?.id)?<Button onClick={handleOpenProfileModal} sx={{borderRadius:"20px"}} variant="outlined">Edit Profile</Button>:<Button sx={{borderRadius:"20px",cursor:'pointer'}} variant="outlined" onClick={handleClick}>{isLiked?'UnFollow':'Follow'}</Button>}
+                    {(userId===auth.user?.id)?<Button onClick={handleOpenProfileModal} sx={{borderRadius:"20px"}} variant="outlined">Edit Profile</Button>:<Button sx={{borderRadius:"20px",cursor:'pointer'}} variant="outlined" onClick={handleClick}>{isLiked?'UnFollow':'Follow'}</Button>}
                     
                 </div>
                 <div className="p-5">

@@ -27,12 +27,9 @@ const style = {
 
 export default function ProfileModal({open,handleClose}) {
    const[selectedImage,setSelectedImage]=React.useState();
-   const[isLoading,setIsLoading]=React.useState(false);
    const handleSelectImage=async(event)=>{
-    setIsLoading(true);
     const imageUrl=await uploadToCloudinary(event.target.files[0],"image")
     setSelectedImage(imageUrl);
-    setIsLoading(false)
     formik.setFieldValue("profile",imageUrl)
 }
     const dispatch=useDispatch();
@@ -46,7 +43,7 @@ export default function ProfileModal({open,handleClose}) {
         profile:selectedImage
       }
       dispatch(updateProfPic(user))
-    },[selectedImage])
+    },[selectedImage, dispatch])
     const formik=useFormik({
         initialValues:{
             profile:null,

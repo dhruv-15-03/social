@@ -1,21 +1,12 @@
 import {FormControlLabel, Radio, RadioGroup, TextField} from "@mui/material";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import React,{useState} from "react";
-import * as Yup from "yup"
 import {Button} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {registerUserAction} from "../../Redux/Auth/auth.actiion";
 import { useNavigate } from "react-router-dom";
 
 const initialValues={name:"",email:"",userName:"",password:"",gender:""}
-const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    password: Yup.string()
-      .min(6, "Password must be at least 6 characters long")
-      .required("Password is required"),
-  });
 
 
 const Register=()=> {

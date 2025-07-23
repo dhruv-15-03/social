@@ -12,8 +12,9 @@ import { createMessage, getAllChats } from "../../Redux/Messages/Message.action"
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import { uploadToCloudinary } from "../../Components/utils/uploadToCloudinary";
 import SockJS from "sockjs-client";
-import Stomp from 'stompjs';
+import { Client } from '@stomp/stompjs';
 import { useNavigate } from "react-router-dom";
+import envConfig from "../../config/environment";
 
 const Messages = () => {
     const dispatch = useDispatch();
@@ -32,14 +33,24 @@ const Messages = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        const sock = new SockJS("https://social-app-backend.up.railway.app/ws");
-        const stomp = Stomp.over(sock);
-        setStompClient(stomp);
-        stomp.connect({}, onConnect, onErr);
+        const client = new Client({
+            webSocketFactory: () => new SockJS(envConfig.api.wsUrl),
+            onConnect: onConnect,
+            onStompError: onErr,
+            reconnectDelay: 5000,
+            heartbeatIncoming: 4000,
+            heartbeatOutgoing: 4000,
+        });
+        setStompClient(client);
+        client.activate();
+        
+        return () => {
+            client.deactivate();
+        };
     }, []);
 
     useEffect(() => {
-        if (stompClient && currentChat) {
+        if (stompClient && currentChat && stompClient.connected) {
             const subscription = stompClient.subscribe(`/user/${currentChat.chatId}/private`, (message) => {
                 onMessageReceive(message);
             });
@@ -85,8 +96,11 @@ const Messages = () => {
     };
 
     const sendMessageToServer = (nmessage) => {
-        if (stompClient && nmessage) {
-            stompClient.send(`/app/chat/${currentChat.chatId}`, {}, JSON.stringify(nmessage));
+        if (stompClient && stompClient.connected && nmessage) {
+            stompClient.publish({
+                destination: `/app/chat/${currentChat.chatId}`,
+                body: JSON.stringify(nmessage)
+            });
         }
     };
 

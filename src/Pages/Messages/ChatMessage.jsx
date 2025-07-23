@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux';
 
 const ChatMessage = ({messages}) => {
-  const{message,auth}=useSelector(store=>store);
+  const{auth}=useSelector(store=>store);
   const isReqUserMessage=auth.user?.id===messages.user?.id
   return (
     <div className={`flex ${!isReqUserMessage?"justify-start":"justify-end"} text-white`}>

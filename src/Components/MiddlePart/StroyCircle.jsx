@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { Avatar } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '../../Redux/Auth/auth.actiion';
 import Render from './Render';
@@ -11,7 +10,7 @@ const StroyCircle = ({item}) => {
   const dispatch=useDispatch()
   useEffect(()=>{
     dispatch(getUser(item.id))
-  },[dispatch])
+  },[dispatch, item.id])
   const handleCloseRender = () =>setOpen(false);
     const handleOpenRender = () => {
         setOpen(true);

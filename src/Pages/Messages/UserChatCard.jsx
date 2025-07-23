@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 const UserChatCard = ({chat}) => {
-  const {auth,message}=useSelector(store=>store)
+  const {auth}=useSelector(store=>store)
   const navigate=useNavigate()
   const handleAvatarClick=()=>{
     navigate(`/profile/${chat?.chats[0]?.id}`)
