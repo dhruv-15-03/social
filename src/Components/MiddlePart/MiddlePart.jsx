@@ -6,11 +6,11 @@ import ImageIcon from "@mui/icons-material/Image";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import ArticleIcon from "@mui/icons-material/Article";
 import PostCard from "../Post/PostCard";
-import CreatePostModal from "../CreatePost/CreatePostModal";
+import CreatePostModal from "../CreatePost";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllPostAction } from "../../Redux/Post/post.action";
 import { yellow } from "@mui/material/colors";
-import CreateStoryModal from "../CreateStory/CreateStoryModal";
+import CreateStoryModal from "../CreateStory";
 import { authStory, users } from "../../Redux/Auth/auth.actiion";
 import Render from "./Render";
 
