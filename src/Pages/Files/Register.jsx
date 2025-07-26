@@ -52,23 +52,13 @@ const Register = () => {
         setGender(event.target.value);
     };
     return (
-        <Box sx={{ 
-            maxWidth: 400, 
-            mx: 'auto', 
-            p: 2.5,
-            mt: 2,
-            mb: 2,
-            boxShadow: 3,
-            borderRadius: 2,
-            bgcolor: 'background.paper',
-            minHeight: 'fit-content'
-        }}>
+        <div>
             {/* Register Header */}
-            <Box sx={{ textAlign: 'center', mb: 2.5 }}>
-                <h2 style={{ margin: 0, color: '#333', fontWeight: 600, fontSize: '24px' }}>
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+                <h2 style={{ margin: 0, color: '#333', fontWeight: 600, fontSize: '22px' }}>
                     Create Account
                 </h2>
-                <p style={{ margin: '6px 0 0 0', color: '#666', fontSize: '14px' }}>
+                <p style={{ margin: '4px 0 0 0', color: '#666', fontSize: '13px' }}>
                     Join us today
                 </p>
             </Box>
@@ -79,8 +69,8 @@ const Register = () => {
                 validationSchema={validationSchema}
             >
                 {({ isSubmitting }) => (
-                    <Form className="space-y-3">
-                        <div className="space-y-3">
+                    <Form className="space-y-4">
+                        <div className="space-y-4">
                             <div>
                                 <Field 
                                     as={TextField}
@@ -89,7 +79,6 @@ const Register = () => {
                                     type="text"
                                     variant="filled"
                                     fullWidth
-                                    size="small"
                                     disabled={isSubmitting || auth.loading}
                                     InputProps={{
                                         disableUnderline: true,
@@ -131,7 +120,6 @@ const Register = () => {
                                     type="email"
                                     variant="filled"
                                     fullWidth
-                                    size="small"
                                     disabled={isSubmitting || auth.loading}
                                     InputProps={{
                                         disableUnderline: true,
@@ -173,7 +161,6 @@ const Register = () => {
                                     type="text"
                                     variant="filled"
                                     fullWidth
-                                    size="small"
                                     disabled={isSubmitting || auth.loading}
                                     InputProps={{
                                         disableUnderline: true,
@@ -215,7 +202,6 @@ const Register = () => {
                                     type="password"
                                     variant="filled"
                                     fullWidth
-                                    size="small"
                                     disabled={isSubmitting || auth.loading}
                                     InputProps={{
                                         disableUnderline: true,
@@ -257,7 +243,6 @@ const Register = () => {
                                     type="password"
                                     variant="filled"
                                     fullWidth
-                                    size="small"
                                     disabled={isSubmitting || auth.loading}
                                     InputProps={{
                                         disableUnderline: true,
@@ -291,9 +276,9 @@ const Register = () => {
                                 <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-sm mt-1" />
                             </div>
 
-                            {/* Gender Selection - Compact Design */}
-                            <Box sx={{ mt: 1.5 }}>
-                                <p style={{ margin: '0 0 6px 0', color: '#333', fontSize: '13px', fontWeight: 500 }}>
+                            {/* Gender Selection */}
+                            <Box>
+                                <p style={{ margin: '0 0 8px 0', color: '#333', fontSize: '14px', fontWeight: 500 }}>
                                     Gender
                                 </p>
                                 <RadioGroup
@@ -303,7 +288,7 @@ const Register = () => {
                                     onChange={handleGenderChange}
                                     sx={{
                                         '& .MuiFormControlLabel-label': {
-                                            fontSize: '13px',
+                                            fontSize: '14px',
                                         },
                                         '& .MuiRadio-root.Mui-checked': {
                                             color: '#ff6b35',
@@ -315,28 +300,31 @@ const Register = () => {
                                 >
                                     <FormControlLabel 
                                         value="female" 
-                                        control={<Radio size="small" />} 
+                                        control={<Radio />} 
                                         label="Female" 
                                         disabled={isSubmitting || auth.loading}
                                     />
                                     <FormControlLabel 
                                         value="male" 
-                                        control={<Radio size="small" />} 
+                                        control={<Radio />} 
                                         label="Male" 
                                         disabled={isSubmitting || auth.loading}
                                     />
                                     <FormControlLabel 
                                         value="other" 
-                                        control={<Radio size="small" />} 
+                                        control={<Radio />} 
                                         label="Other" 
                                         disabled={isSubmitting || auth.loading}
                                     />
                                 </RadioGroup>
+                                {!gender && (
+                                    <div className="text-red-500 text-sm mt-1">Gender is required</div>
+                                )}
                             </Box>
                             
                             {/* Enhanced error display */}
                             {auth.error && (
-                                <Alert severity="error" sx={{ mt: 1.5, borderRadius: 2 }}>
+                                <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>
                                     {auth.error.response?.data?.message || 
                                      auth.error.message || 
                                      'Registration failed. Please try again.'}
@@ -346,13 +334,12 @@ const Register = () => {
                         
                         <Button 
                             sx={{ 
-                                padding: '10px 0', 
+                                padding: '12px 0', 
                                 backgroundColor: '#ff6b35',
                                 fontSize: '16px',
                                 fontWeight: 600,
                                 textTransform: 'none',
                                 borderRadius: 2,
-                                mt: 2,
                                 '&:hover': {
                                     backgroundColor: '#e55a2b'
                                 },
@@ -372,8 +359,8 @@ const Register = () => {
                 )}
             </Formik>
             
-            <Box sx={{ textAlign: 'center', mt: 2, pt: 1.5, borderTop: '1px solid #eee' }}>
-                <p style={{ margin: '0 0 8px 0', color: '#666', fontSize: '13px' }}>
+            <Box sx={{ textAlign: 'center', mt: 3, pt: 2, borderTop: '1px solid #eee' }}>
+                <p style={{ margin: '0 0 10px 0', color: '#666', fontSize: '14px' }}>
                     Already have an account?
                 </p>
                 <Button 
@@ -383,7 +370,6 @@ const Register = () => {
                         textTransform: 'none',
                         fontWeight: 600,
                         color: '#ff6b35',
-                        fontSize: '14px',
                         '&:hover': {
                             backgroundColor: 'rgba(255, 107, 53, 0.1)'
                         }
@@ -392,7 +378,7 @@ const Register = () => {
                     Sign In
                 </Button>
             </Box>
-        </Box>
+        </div>
     );
 }
 
