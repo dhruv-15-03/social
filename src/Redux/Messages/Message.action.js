@@ -9,7 +9,7 @@ export const createMessage=(reqData)=>async(dispatch)=>{
         dispatch({type:CREATE_MESSAGE_SUCCESS,payload:data})
         
     } catch (error) {
-        console.log(error)
+
         dispatch({
             type:CREATE_MESSAGE_FAILURE,payload:error
         });
@@ -23,7 +23,7 @@ export const createChat=(userId)=>async(dispatch)=>{
         dispatch({type:CREATE_CHAT_SUCCESS,payload:data})
         
     } catch (error) {
-        console.log(error)
+
         dispatch({
             type:CREATE_CHAT_FAILURE,payload:error
         });

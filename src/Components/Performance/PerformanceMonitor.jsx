@@ -13,16 +13,22 @@ const PerformanceMonitor = () => {
       const entries = list.getEntries();
       entries.forEach((entry) => {
         if (entry.entryType === 'measure') {
+        if (process.env.NODE_ENV === 'development') {
           console.log(`Performance: ${entry.name} took ${entry.duration}ms`);
+        }
         }
         
         // Log Web Vitals
         if (entry.entryType === 'navigation') {
+        if (process.env.NODE_ENV === 'development') {
           console.log('Navigation timing:', entry);
+        }
         }
         
         if (entry.entryType === 'paint') {
+        if (process.env.NODE_ENV === 'development') {
           console.log(`${entry.name}: ${entry.startTime}ms`);
+        }
         }
       });
     });

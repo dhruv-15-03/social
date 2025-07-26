@@ -4,8 +4,20 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUserAction, getProfileAction } from "../../Redux/Auth/auth.actiion";
 import { useNavigate } from "react-router-dom";
+import * as Yup from 'yup';
 
-const initialValues = { name: "", email: "", userName: "", password: "", gender: "" }
+const validationSchema = Yup.object({
+    name: Yup.string().required('Name is required'),
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    userName: Yup.string().required('Username is required'),
+    password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+        .required('Confirm password is required'),
+    gender: Yup.string().required('Gender is required')
+});
+
+const initialValues = { name: "", email: "", userName: "", password: "", confirmPassword: "", gender: "" }
 
 const Register = () => {
     const { auth } = useSelector(store => store);
@@ -13,16 +25,14 @@ const Register = () => {
     const navigate = useNavigate();
     const [gender, setGender] = useState("");
 
-    // Enhanced authentication check similar to Login
+    // Enhanced authentication check
     useEffect(() => {
         if (auth.jwt && auth.user && !auth.loading) {
-            console.log('✅ User authenticated, redirecting to home');
             navigate('/', { replace: true });
             return;
         }
 
         if (auth.jwt && !auth.user && !auth.loading) {
-            console.log('🔄 JWT found, fetching user profile');
             dispatch(getProfileAction(auth.jwt));
         }
     }, [auth.jwt, auth.user, auth.loading, dispatch, navigate]);
@@ -32,7 +42,7 @@ const Register = () => {
             values.gender = gender;
             await dispatch(registerUserAction({ data: values }));
         } catch (error) {
-            console.error('Registration failed:', error);
+            // Error handling is done by Redux action
         } finally {
             setSubmitting(false);
         }
@@ -66,6 +76,7 @@ const Register = () => {
             <Formik
                 onSubmit={handleSubmit}
                 initialValues={initialValues}
+                validationSchema={validationSchema}
             >
                 {({ isSubmitting }) => (
                     <Form className="space-y-3">
@@ -236,6 +247,48 @@ const Register = () => {
                                     }}
                                 />
                                 <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
+                            </div>
+
+                            <div>
+                                <Field 
+                                    as={TextField}
+                                    name="confirmPassword"
+                                    label="Confirm Password"
+                                    type="password"
+                                    variant="filled"
+                                    fullWidth
+                                    size="small"
+                                    disabled={isSubmitting || auth.loading}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                    }}
+                                    sx={{
+                                        '& .MuiFilledInput-root': {
+                                            borderRadius: '8px',
+                                            backgroundColor: '#f8fafc',
+                                            border: '1.5px solid #e0e0e0',
+                                            transition: 'border-color 0.2s',
+                                            boxShadow: 'none',
+                                            '&:hover': {
+                                                backgroundColor: '#f3f3f3',
+                                                borderColor: '#ff6b35',
+                                            },
+                                            '&.Mui-focused': {
+                                                backgroundColor: '#fff',
+                                                borderColor: '#ff6b35',
+                                                boxShadow: '0 0 0 3px rgba(255,107,53,0.08)',
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: '#666',
+                                            fontWeight: 500,
+                                            '&.Mui-focused': {
+                                                color: '#ff6b35',
+                                            },
+                                        },
+                                    }}
+                                />
+                                <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-sm mt-1" />
                             </div>
 
                             {/* Gender Selection - Compact Design */}

@@ -1,9 +1,20 @@
-import React, { useEffect } from 'react';
-import { TextField, Button, Alert, Box } from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { TextField, Button, Alert, Box, Fade, CircularProgress } from "@mui/material";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUserAction, getProfileAction } from "../../Redux/Auth/auth.actiion";
 import { useNavigate } from "react-router-dom";
+import * as Yup from 'yup';
+import { logger } from '../../utils/productionLogger';
+
+const validationSchema = Yup.object({
+    username: Yup.string()
+        .min(3, 'Username must be at least 3 characters')
+        .required('Username is required'),
+    password: Yup.string()
+        .min(6, 'Password must be at least 6 characters')
+        .required('Password is required')
+});
 
 const initialValues = { username: "", password: "" };
 
@@ -11,27 +22,57 @@ const Login = () => {
     const { auth } = useSelector(store => store);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [loginAttempts, setLoginAttempts] = useState(0);
+    const [isRateLimited, setIsRateLimited] = useState(false);
 
-    // Enhanced authentication check with better logic
     useEffect(() => {
-        // Check if user is already authenticated and has profile data
         if (auth.jwt && auth.user && !auth.loading) {
-            console.log('✅ User authenticated, redirecting to home');
-            navigate('/', { replace: true });
+            logger.auth.info('User already authenticated, redirecting to home');
+            setTimeout(() => {
+                navigate('/', { replace: true });
+            }, 100);
             return;
         }
 
         if (auth.jwt && !auth.user && !auth.loading) {
-            console.log('🔄 JWT found, fetching user profile');
+            logger.auth.info('JWT found but no user profile, fetching profile');
             dispatch(getProfileAction(auth.jwt));
         }
     }, [auth.jwt, auth.user, auth.loading, dispatch, navigate]);
 
-    const handleSubmit = async (values, { setSubmitting }) => {
+    const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
+        // Rate limiting protection
+        if (loginAttempts >= 5) {
+            setIsRateLimited(true);
+            logger.auth.warn('Too many login attempts, rate limiting triggered');
+            setTimeout(() => {
+                setIsRateLimited(false);
+                setLoginAttempts(0);
+            }, 300000); // 5 minutes
+            setSubmitting(false);
+            return;
+        }
+
         try {
+            logger.auth.login('Login attempt initiated', { username: values.username });
             await dispatch(loginUserAction({ data: values }));
+            logger.auth.login('Login successful');
+            setLoginAttempts(0); // Reset on success
         } catch (error) {
-            console.error('Login failed:', error);
+            logger.auth.error('Login failed', { 
+                username: values.username, 
+                error: error.message,
+                attempt: loginAttempts + 1
+            });
+            
+            setLoginAttempts(prev => prev + 1);
+            
+            // Handle specific error types
+            if (error.response?.status === 401) {
+                setFieldError('password', 'Invalid username or password');
+            } else if (error.response?.status === 429) {
+                setIsRateLimited(true);
+            }
         } finally {
             setSubmitting(false);
         }
@@ -59,6 +100,7 @@ const Login = () => {
 
             <Formik
                 initialValues={initialValues}
+                validationSchema={validationSchema}
                 onSubmit={handleSubmit}
             >
                 {({ isSubmitting }) => (
@@ -145,13 +187,55 @@ const Login = () => {
                                 <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
                             </div>
                             
-                            {/* Enhanced error display */}
+                            {/* Enhanced error display with better UX */}
                             {auth.error && (
-                                <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>
-                                    {auth.error.response?.data?.message || 
-                                     auth.error.message || 
-                                     'Login failed. Please try again.'}
-                                </Alert>
+                                <Fade in={!!auth.error} timeout={300}>
+                                    <Alert 
+                                        severity="error" 
+                                        sx={{ 
+                                            mt: 2, 
+                                            borderRadius: 2,
+                                            '& .MuiAlert-message': {
+                                                width: '100%'
+                                            }
+                                        }}
+                                    >
+                                        {auth.error.response?.data?.message || 
+                                         auth.error.message || 
+                                         'Login failed. Please check your credentials and try again.'}
+                                    </Alert>
+                                </Fade>
+                            )}
+
+                            {/* Rate limiting warning */}
+                            {isRateLimited && (
+                                <Fade in={isRateLimited} timeout={300}>
+                                    <Alert 
+                                        severity="warning" 
+                                        sx={{ mt: 2, borderRadius: 2 }}
+                                    >
+                                        Too many login attempts. Please wait 5 minutes before trying again.
+                                    </Alert>
+                                </Fade>
+                            )}
+
+                            {/* Login attempts indicator */}
+                            {loginAttempts > 0 && !isRateLimited && (
+                                <Box sx={{ mt: 1, textAlign: 'center' }}>
+                                    <Box 
+                                        component="span" 
+                                        sx={{ 
+                                            fontSize: '12px', 
+                                            color: loginAttempts >= 3 ? 'error.main' : 'warning.main',
+                                            fontWeight: 500
+                                        }}
+                                    >
+                                        {loginAttempts >= 3 
+                                            ? `⚠️ ${5 - loginAttempts} attempts remaining`
+                                            : `Attempt ${loginAttempts} of 5`
+                                        }
+                                    </Box>
+                                </Box>
                             )}
                         </div>
                         
@@ -163,6 +247,7 @@ const Login = () => {
                                 fontWeight: 600,
                                 textTransform: 'none',
                                 borderRadius: 2,
+                                position: 'relative',
                                 '&:hover': {
                                     backgroundColor: '#e55a2b'
                                 },
@@ -174,9 +259,18 @@ const Login = () => {
                             fullWidth 
                             type="submit" 
                             variant="contained"
-                            disabled={isSubmitting || auth.loading}
+                            disabled={isSubmitting || auth.loading || isRateLimited}
                         >
-                            {isSubmitting || auth.loading ? 'Signing in...' : 'Sign In'}
+                            {isSubmitting || auth.loading ? (
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <CircularProgress size={20} color="inherit" />
+                                    <span>Signing in...</span>
+                                </Box>
+                            ) : isRateLimited ? (
+                                'Please wait...'
+                            ) : (
+                                'Sign In'
+                            )}
                         </Button>
                     </Form>
                 )}

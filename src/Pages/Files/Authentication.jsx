@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Grid } from "@mui/material";
 import img from "../../img/Screenshot 2024-07-21 163336.png"
 import i2 from "../../img/pngtree-background-frame-geometric-with-neon-glow-and-bright-colors-can-be-image_339492.jpg"
@@ -6,8 +6,19 @@ import i2 from "../../img/pngtree-background-frame-geometric-with-neon-glow-and-
 import Login from "./Login";
 import {Card} from "@mui/material";
 import Register from "./Register";
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
+import { useSelector } from "react-redux";
+
 const Authentication=()=>{
+    const { auth } = useSelector(store => store);
+    const navigate = useNavigate();
+
+    // Redirect to home if user becomes authenticated
+    useEffect(() => {
+        if (auth.jwt && auth.user && !auth.loading) {
+            navigate('/', { replace: true });
+        }
+    }, [auth.jwt, auth.user, auth.loading, navigate]);
 
     return(
         <div >

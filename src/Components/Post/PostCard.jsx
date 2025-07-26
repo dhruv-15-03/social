@@ -1,6 +1,6 @@
 import {Button, CardActions, CardContent, Divider, IconButton, Menu, MenuItem, Typography}  from '@mui/material'
 import { orange, red } from '@mui/material/colors'
-import React from 'react'
+import React, { useCallback, useMemo } from 'react'
 import {Avatar} from '@mui/material';
 import {Card} from '@mui/material';
 import {CardHeader} from '@mui/material';
@@ -16,34 +16,37 @@ import { createCommentAction, deletePostAction, likePostAction, savePostAction }
 import { isLikedBy } from '../utils/isLiked';
 import { isSavedBy } from '../utils/isSaved';
 import TextDisplay from './TextDisplay';
+import LazyImage from '../UI/LazyImage';
 
 
-const PostCard = ({ item }) => {
+const PostCard = React.memo(({ item }) => {
   const { auth } = useSelector((store) => store);
   const dispatch = useDispatch();
 
-  const [isLiked, setIsLiked] = React.useState(() =>
-    isLikedBy(auth.user?.id, item)
-  );
-  const [isSaved, setIsSaved] = React.useState(() =>
-    isSavedBy(auth.user?.id, item)
-  );
+  // Memoized initial states to avoid expensive calculations on every render
+  const initialIsLiked = useMemo(() => isLikedBy(auth.user?.id, item), [auth.user?.id, item]);
+  const initialIsSaved = useMemo(() => isSavedBy(auth.user?.id, item), [auth.user?.id, item]);
+
+  const [isLiked, setIsLiked] = React.useState(initialIsLiked);
+  const [isSaved, setIsSaved] = React.useState(initialIsSaved);
   const [showComments, setShowComments] = React.useState(false);
   const [val, setVal] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState(null);
+  
   const open = Boolean(anchorEl);
 
-  const handleLikePost = () => {
+  // Memoized handlers to prevent unnecessary re-renders
+  const handleLikePost = useCallback(() => {
     dispatch(likePostAction(item.postID));
     setIsLiked((prevLiked) => !prevLiked); 
-  };
+  }, [dispatch, item.postID]);
 
-  const handleSavePost = () => {
+  const handleSavePost = useCallback(() => {
     dispatch(savePostAction(item.postID));
     setIsSaved((prevSaved) => !prevSaved); 
-  };
+  }, [dispatch, item.postID]);
 
-  const handleCreateComment = (comment) => {
+  const handleCreateComment = useCallback((comment) => {
     const reqData = {
       postId: item.postID,
       data: {
@@ -52,27 +55,80 @@ const PostCard = ({ item }) => {
     };
     setVal('');
     dispatch(createCommentAction(reqData));
-  };
+  }, [dispatch, item.postID]);
 
-  const handleDeletePost = () => {
+  const handleClose = useCallback(() => {
+    setAnchorEl(null);
+  }, []);
+
+  const handleDeletePost = useCallback(() => {
     dispatch(deletePostAction(item.postID));
     handleClose();
-  };
+  }, [dispatch, item.postID, handleClose]);
 
-  const handleClick = (event) => {
+  const handleClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, []);
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const handleToggleComments = useCallback(() => {
+    setShowComments((prev) => !prev);
+  }, []);
+
+  const handleInputChange = useCallback((e) => {
+    setVal(e.target.value);
+  }, []);
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter' && val.trim()) {
+      handleCreateComment(val);
+    }
+  }, [val, handleCreateComment]);
+
+  // Memoized avatar display name
+  const avatarDisplayName = useMemo(() => {
+    return item.user?.profile || item.user?.name?.[0] || '';
+  }, [item.user?.profile, item.user?.name]);
+
+  // Memoized media content with lazy loading
+  const mediaContent = useMemo(() => {
+    if (item.image) {
+      return (
+        <LazyImage
+          src={item.image}
+          alt={`Post by ${item.user?.name || 'User'}`}
+          className='w-full max-h-[30rem] object-cover object-top'
+          errorFallback={
+            <div className='w-full h-64 bg-gray-200 flex items-center justify-center'>
+              <span className='text-gray-500'>Image failed to load</span>
+            </div>
+          }
+        />
+      );
+    }
+    if (item.video) {
+      return (
+        <video 
+          controls 
+          loop 
+          src={item.video} 
+          className='w-full h-full'
+          preload='metadata'
+        />
+      );
+    }
+    return (
+      <div className=''>
+        <TextDisplay item={item.post} />
+      </div>
+    );
+  }, [item.image, item.video, item.post, item.user?.name]);
 
   return (
     <Card className=''>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            {item.user?.profile?item.user.profile:item.user?.name[0]}
+            {avatarDisplayName}
           </Avatar>
         }
         action={
@@ -102,11 +158,7 @@ const PostCard = ({ item }) => {
         title={item.user.name}
         subheader={'@' + item.user.userName}
       />
-      {item.image?<img
-        className='w-full max-h-[30rem] object-cover object-top'
-        src={item.image}
-        alt=''
-      />:item.video?<video controls loop src={item.video} className='w-full h-full'></video>:<div className=''><TextDisplay item={item.post}/></div>}
+      {mediaContent}
       <CardContent>
         <Typography variant='body2' color='text.secondary'>
           {item.caption}
@@ -120,7 +172,7 @@ const PostCard = ({ item }) => {
           <IconButton>
             <ShareIcon />
           </IconButton>
-          <IconButton onClick={() => setShowComments((prev) => !prev)}>
+          <IconButton onClick={handleToggleComments}>
             <ChatBubbleIcon />
           </IconButton>
         </div>
@@ -136,12 +188,8 @@ const PostCard = ({ item }) => {
             <Avatar sx={{}}>{}</Avatar>
             <input
               value={val}
-              onChange={(e) => setVal(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && val.trim()) {
-                  handleCreateComment(val);
-                }
-              }}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
               className='w-full outline-none bg-transparent border border-[#3b4050] rounded-full px-5 py-2'
               type='text'
               placeholder='Write your comment'
@@ -169,7 +217,8 @@ const PostCard = ({ item }) => {
       )}
     </Card>
   );
-};
+});
 
+PostCard.displayName = 'PostCard';
 
 export default PostCard

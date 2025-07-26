@@ -1,5 +1,6 @@
 import axios from "axios";
 import envConfig from "./environment";
+import { logger } from "../utils/productionLogger";
 
 export const API_BASE_URL = envConfig.api.baseUrl;
 
@@ -19,25 +20,28 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     
-    if (envConfig.app.isDevelopment) {
-      console.log(`📡 API Request: ${config.method?.toUpperCase()} ${config.url}`, config);
-    }
+    // Production-safe logging
+    logger.api('request', `${config.method?.toUpperCase()} ${config.url}`, {
+      method: config.method,
+      url: config.url,
+      hasAuth: !!token
+    });
     
     return config;
   },
   (error) => {
-    if (envConfig.features.errorLogging) {
-      console.error('❌ Request Error:', error);
-    }
+    logger.error('API Request Error:', error.message);
     return Promise.reject(error);
   }
 );
 
 api.interceptors.response.use(
   (response) => {
-    if (envConfig.app.isDevelopment) {
-      console.log(`✅ API Response: ${response.config.url}`, response.data);
-    }
+    // Production-safe logging
+    logger.api('response', `${response.config.url}`, {
+      status: response.status,
+      method: response.config.method
+    });
     
     return response;
   },
@@ -47,7 +51,7 @@ api.interceptors.response.use(
       
       switch (status) {
         case 401:
-          console.warn('🔐 Unauthorized access - clearing session');
+          logger.warn('Unauthorized access - clearing session');
           localStorage.removeItem(envConfig.auth.storageKey);
           if (window.location.pathname !== '/auth') {
             window.location.href = '/auth';
@@ -55,28 +59,24 @@ api.interceptors.response.use(
           break;
           
         case 403:
-          console.warn('🚫 Forbidden access');
+          logger.warn('Forbidden access');
           break;
           
         case 404:
-          console.warn('🔍 Resource not found');
+          logger.warn('Resource not found');
           break;
           
         case 500:
-          console.error('🔥 Server error');
+          logger.error('Server error', { status, url: error.config?.url });
           break;
           
         default:
-          if (envConfig.features.errorLogging) {
-            console.error(`❌ API Error ${status}:`, data);
-          }
+          logger.error(`API Error ${status}`, { status, data, url: error.config?.url });
       }
     } else if (error.request) {
-      console.error('🌐 Network Error:', error.message);
+      logger.error('Network Error', { message: error.message, code: error.code });
     } else {
-      if (envConfig.features.errorLogging) {
-        console.error('❌ Request Setup Error:', error.message);
-      }
+      logger.error('Request Setup Error', error.message);
     }
     
     return Promise.reject(error);
@@ -119,7 +119,9 @@ export const apiHelpers = {
         if (i < maxRetries) {
           const delay = Math.pow(2, i) * 1000; // Exponential backoff
           await new Promise(resolve => setTimeout(resolve, delay));
+        if (process.env.NODE_ENV === 'development') {
           console.log(`🔄 Retrying request (attempt ${i + 2}/${maxRetries + 1})`);
+        }
         }
       }
     }

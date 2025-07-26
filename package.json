@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
+    "@hookform/resolvers": "^5.2.0",
     "@mui/icons-material": "^5.16.5",
     "@mui/material": "^5.16.5",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
@@ -12,15 +13,19 @@
     "@stomp/stompjs": "^7.1.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.10",
+    "@tanstack/react-query": "^5.83.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/react-helmet": "^6.1.11",
     "axios": "^1.7.2",
     "formik": "^2.4.6",
     "framer-motion": "^10.16.16",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-error-boundary": "^4.0.11",
+    "react-helmet-async": "^2.0.5",
+    "react-hook-form": "^7.61.1",
     "react-intersection-observer": "^9.5.3",
     "react-query": "^3.39.3",
     "react-redux": "^9.1.2",
@@ -38,8 +43,26 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:production": "set NODE_ENV=production && npm run build",
+    "build:analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "test:ci": "CI=true npm run test:coverage",
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.{js,jsx} --max-warnings 0",
+    "lint:fix": "eslint src/**/*.{js,jsx} --fix",
+    "prettier": "prettier --write src/**/*.{js,jsx,css,md}",
+    "prettier:check": "prettier --check src/**/*.{js,jsx,css,md}",
+    "analyze": "npm run build && npx serve -s build",
+    "sw:dev": "workbox generateSW workbox-config.js",
+    "perf:audit": "lighthouse http://localhost:3000 --output html --output-path ./lighthouse-report.html",
+    "bundle:analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
+    "security:audit": "npm audit --audit-level moderate",
+    "security:fix": "npm audit fix",
+    "clean": "rm -rf build node_modules package-lock.json && npm install",
+    "precommit": "npm run lint && npm run prettier:check && npm run test:ci",
+    "deploy:prepare": "npm run lint && npm run test:ci && npm run build:production",
+    "serve": "npx serve -s build -l 3000"
   },
   "eslintConfig": {
     "extends": [
@@ -60,6 +83,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@tanstack/react-query-devtools": "^5.83.0"
   }
 }

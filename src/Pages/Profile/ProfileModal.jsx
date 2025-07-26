@@ -35,7 +35,7 @@ export default function ProfileModal({open,handleClose}) {
     const dispatch=useDispatch();
     const {auth}=useSelector(store=>store)
     const handleSubmit=(values)=>{
-        console.log("values",values)
+        // Processing form values
         
     }
     useEffect(()=>{

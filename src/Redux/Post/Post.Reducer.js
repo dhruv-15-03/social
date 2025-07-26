@@ -30,7 +30,7 @@ export const postReducer=(state=initialState,action)=>{
         case DELETE_POST_SUCCESS:
             return{
                 ...state,
-                posts: state.posts.filter(post => post.id !== action.payload),
+                posts: state.posts.filter(post => post.postID !== action.payload),
                 loading:false,
                 error:null
         }
@@ -74,7 +74,7 @@ export const postReducer=(state=initialState,action)=>{
             return{
                 ...state,
                 like:action.payload,
-                posts:state.posts.map((item)=>item.id===action.payload.id?action.payload:item),
+                posts:state.posts.map((item)=>item.postID===action.payload.postID?action.payload:item),
                 loading:false,
                 error:null
             };
@@ -82,7 +82,7 @@ export const postReducer=(state=initialState,action)=>{
             return{
                 ...state,
                 save:action.payload,
-                posts:state.posts.map((item)=>item.id===action.payload.id?action.payload:item),
+                posts:state.posts.map((item)=>item.postID===action.payload.postID?action.payload:item),
                 loading:false,
                 error:null
             };
