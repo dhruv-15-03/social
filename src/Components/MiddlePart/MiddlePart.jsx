@@ -10,7 +10,7 @@ import CreatePostModal from "../CreatePost";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllPostAction } from "../../Redux/Post/post.action";
 import { yellow } from "@mui/material/colors";
-import CreateStoryModal from "../CreateSTory";
+import CreateStoryModal from "../CreateSTory/CreateStoryModal";
 import { authStory, users } from "../../Redux/Auth/auth.actiion";
 import Render from "./Render";
 
