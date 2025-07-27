@@ -7,7 +7,6 @@ export const userPro=(userId)=>async(dispatch)=>{
         const {data}=await api.get(`/api/user/getUser/${userId}`);
         dispatch({type:PROFILE_SUCCESS,payload:data})
     }catch (error) {
-        console.log(error)
         dispatch({type:PROFILE_FAILURE,payload:error})
     }
         

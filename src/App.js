@@ -1,14 +1,11 @@
 
-import React, { Suspense, lazy } from "react";
+import React, { Suspense } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ProfessionalAuthWrapper from "./Components/Auth/ProfessionalAuthWrapper";
 import { AppLoader } from "./Components/UI/LoadingComponents";
 import ProductionErrorBoundary from "./Components/ErrorBoundary/ProductionErrorBoundary";
 import SEOHead from "./Components/SEO/SEOHead";
-
-const Authentication = lazy(() => import("./Pages/Files/Authentication"));
-const HomePage = lazy(() => import("./Pages/Home/HomePage"));
-const Messages = lazy(() => import("./Pages/Messages/Messages"));
+import { Authentication, HomePage, Messages } from "./utils/lazyComponents";
 
 const LoadingFallback = () => <AppLoader />;
 

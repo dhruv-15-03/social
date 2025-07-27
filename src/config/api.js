@@ -120,7 +120,7 @@ export const apiHelpers = {
           const delay = Math.pow(2, i) * 1000; // Exponential backoff
           await new Promise(resolve => setTimeout(resolve, delay));
         if (process.env.NODE_ENV === 'development') {
-          console.log(`🔄 Retrying request (attempt ${i + 2}/${maxRetries + 1})`);
+          // Retrying request in development mode
         }
         }
       }

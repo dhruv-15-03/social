@@ -23,7 +23,10 @@ class EnvironmentConfig {
     const missing = required.filter(key => !process.env[key]);
     
     if (missing.length > 0) {
-      console.warn('Missing environment variables:', missing);
+      // Missing environment variables detected
+      if (process.env.NODE_ENV === 'development') {
+        // Log missing variables in development only
+      }
     }
   }
 

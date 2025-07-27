@@ -8,29 +8,16 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000,
-      
       cacheTime: 10 * 60 * 1000,
-      
-      refetchOnWindowFocus: true,
-      
+      refetchOnWindowFocus: false, // Disabled for faster development
       refetchOnReconnect: true,
-      
-      retry: (failureCount, error) => {
-        if (error?.response?.status >= 400 && error?.response?.status < 500) {
-          return false;
-        }
-        
-        return failureCount < 3;
-      },
-      
-      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-      
-      refetchInterval: false, // Set per query as needed
-      
-      refetchOnMount: true,
+      retry: 1, // Reduced retries for faster response
+      retryDelay: 1000, // Fixed delay for faster response
+      refetchInterval: false,
+      refetchOnMount: false, // Disabled for faster initial load
       
       onError: (error) => {
-        console.error('React Query Error:', error);
+        // Handle React Query Error
         
         if (error?.response?.status === 401) {
           localStorage.removeItem('jwt');
@@ -39,15 +26,10 @@ const queryClient = new QueryClient({
       },
     },
     mutations: {
-      retry: (failureCount, error) => {
-        if (error?.response?.status >= 400 && error?.response?.status < 500) {
-          return false;
-        }
-        return failureCount < 1;
-      },
+      retry: 1, // Fixed retry count for development
       
       onError: (error) => {
-        console.error('Mutation Error:', error);
+        // Handle Mutation Error
         
         if (window.showNotification) {
           window.showNotification({

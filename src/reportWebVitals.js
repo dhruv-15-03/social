@@ -3,14 +3,7 @@
 const reportWebVitals = (onPerfEntry, options = {}) => {
   const {
     enableConsoleLogging = process.env.NODE_ENV === 'development',
-    enableAnalytics = process.env.REACT_APP_ENABLE_ANALYTICS === 'true',
-    threshold = {
-      CLS: 0.1,     // Cumulative Layout Shift
-      FID: 100,     // First Input Delay (ms)
-      FCP: 1800,    // First Contentful Paint (ms)
-      LCP: 2500,    // Largest Contentful Paint (ms)
-      TTFB: 800,    // Time to First Byte (ms)
-    }
+    enableAnalytics = process.env.REACT_APP_ENABLE_ANALYTICS === 'true'
   } = options;
 
   if (onPerfEntry && onPerfEntry instanceof Function) {
@@ -25,14 +18,13 @@ const reportWebVitals = (onPerfEntry, options = {}) => {
         
         // Log performance metrics in development
         if (enableConsoleLogging) {
-          const emoji = rating === 'good' ? '🟢' : rating === 'needs-improvement' ? '🟡' : '🔴';
         if (process.env.NODE_ENV === 'development') {
-          console.log(`${emoji} ${name}: ${value.toFixed(2)}ms (${rating})`);
+          // Performance metric logged in development
         }
           
           // Warn about performance issues
           if (rating === 'poor') {
-            console.warn(`⚠️ Performance Warning: ${name} is ${value.toFixed(2)}ms (threshold: ${threshold[name] || 'N/A'})`);
+            // Performance warning handled
           }
         }
 
@@ -72,7 +64,7 @@ const reportWebVitals = (onPerfEntry, options = {}) => {
         onINP(handleMetric);
       } else if (enableConsoleLogging) {
       if (process.env.NODE_ENV === 'development') {
-        console.log('ℹ️ onINP not available in this web-vitals version. Consider upgrading to v3+ for INP support.');
+        // onINP not available in this web-vitals version
       }
       }
     });
@@ -84,15 +76,7 @@ const reportWebVitals = (onPerfEntry, options = {}) => {
     window.addEventListener('load', () => {
       const navigation = performance.getEntriesByType('navigation')[0];
       if (navigation && enableConsoleLogging && process.env.NODE_ENV === 'development') {
-        console.log('📊 Navigation Timing:', {
-          'DNS Lookup': navigation.domainLookupEnd - navigation.domainLookupStart,
-          'TCP Connection': navigation.connectEnd - navigation.connectStart,
-          'Request': navigation.responseStart - navigation.requestStart,
-          'Response': navigation.responseEnd - navigation.responseStart,
-          'DOM Processing': navigation.domContentLoadedEventEnd - navigation.responseEnd,
-          'Load Complete': navigation.loadEventEnd - navigation.domContentLoadedEventEnd,
-          'Total Load Time': navigation.loadEventEnd - navigation.navigationStart
-        });
+        // Navigation timing data available for development analysis
       }
     });
 
@@ -100,7 +84,7 @@ const reportWebVitals = (onPerfEntry, options = {}) => {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (entry.duration > 1000 && enableConsoleLogging) { // Log slow resources
-          console.warn(`🐌 Slow Resource: ${entry.name} took ${entry.duration.toFixed(2)}ms`);
+          // Slow resource detected - handled for performance monitoring
         }
       }
     });

@@ -1,13 +1,5 @@
-/**
- * Security Utilities for the Social Media App
- * Provides input sanitization, XSS protection, and security validations
- */
 
-/**
- * Input sanitization utilities
- */
 export class SecurityUtils {
-  // XSS Protection
   static sanitizeHtml(input) {
     if (typeof input !== 'string') return input;
     
@@ -25,7 +17,6 @@ export class SecurityUtils {
     return input.replace(/[&<>"'`=\/]/g, (s) => entityMap[s]);
   }
 
-  // SQL Injection Protection
   static sanitizeForDatabase(input) {
     if (typeof input !== 'string') return input;
     
@@ -80,9 +71,7 @@ export class SecurityUtils {
     };
   }
 
-  // Content filtering for inappropriate content
   static filterProfanity(text) {
-    // Basic profanity filter - in production, use a proper service
     const profanityList = ['spam', 'scam', 'fake', 'fraud'];
     let filteredText = text;
     
@@ -94,7 +83,6 @@ export class SecurityUtils {
     return filteredText;
   }
 
-  // Rate limiting helper
   static createRateLimiter(maxRequests, timeWindow) {
     const requests = new Map();
     
@@ -118,7 +106,6 @@ export class SecurityUtils {
     };
   }
 
-  // JWT validation
   static isValidJWT(token) {
     if (!token) return false;
     
@@ -126,11 +113,9 @@ export class SecurityUtils {
     if (parts.length !== 3) return false;
     
     try {
-      // Validate base64 encoding
       const header = JSON.parse(atob(parts[0]));
       const payload = JSON.parse(atob(parts[1]));
       
-      // Check expiration
       if (payload.exp && payload.exp < Date.now() / 1000) {
         return false;
       }
@@ -141,7 +126,6 @@ export class SecurityUtils {
     }
   }
 
-  // File upload security
   static validateFileUpload(file, options = {}) {
     const {
       maxSize = 5 * 1024 * 1024, // 5MB default
@@ -151,17 +135,14 @@ export class SecurityUtils {
 
     const errors = [];
 
-    // Size check
     if (file.size > maxSize) {
       errors.push(`File size must be less than ${maxSize / 1024 / 1024}MB`);
     }
 
-    // Type check
     if (!allowedTypes.includes(file.type)) {
       errors.push(`File type ${file.type} is not allowed`);
     }
 
-    // Extension check
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
     if (!allowedExtensions.includes(fileExtension)) {
       errors.push(`File extension ${fileExtension} is not allowed`);
@@ -173,7 +154,6 @@ export class SecurityUtils {
     };
   }
 
-  // Generate secure random string
   static generateSecureToken(length = 32) {
     const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
@@ -186,7 +166,6 @@ export class SecurityUtils {
         result += charset[values[i] % charset.length];
       }
     } else {
-      // Fallback for older browsers
       for (let i = 0; i < length; i++) {
         result += charset.charAt(Math.floor(Math.random() * charset.length));
       }
@@ -195,12 +174,10 @@ export class SecurityUtils {
     return result;
   }
 
-  // Check if running in secure context
   static isSecureContext() {
     return window.isSecureContext || window.location.protocol === 'https:';
   }
 
-  // Content Security Policy helper
   static getCSPViolations() {
     return new Promise((resolve) => {
       const violations = [];
@@ -214,17 +191,13 @@ export class SecurityUtils {
         });
       });
       
-      // Return violations after a short delay
       setTimeout(() => resolve(violations), 1000);
     });
   }
 }
 
-/**
- * Privacy utilities
- */
+
 export class PrivacyUtils {
-  // Mask sensitive data
   static maskEmail(email) {
     const [username, domain] = email.split('@');
     const maskedUsername = username.charAt(0) + '*'.repeat(username.length - 2) + username.charAt(username.length - 1);
@@ -235,7 +208,6 @@ export class PrivacyUtils {
     return phone.replace(/(\d{3})\d{3}(\d{4})/, '$1***$2');
   }
 
-  // Data anonymization
   static anonymizeUserData(userData) {
     return {
       ...userData,
@@ -247,13 +219,12 @@ export class PrivacyUtils {
     };
   }
 
-  // Local storage encryption (basic)
   static encryptLocalStorage(key, data) {
     try {
       const encrypted = btoa(JSON.stringify(data));
       localStorage.setItem(key, encrypted);
     } catch (error) {
-      console.error('Failed to encrypt and store data:', error);
+      // Failed to encrypt and store data
     }
   }
 
@@ -264,7 +235,7 @@ export class PrivacyUtils {
       
       return JSON.parse(atob(encrypted));
     } catch (error) {
-      console.error('Failed to decrypt stored data:', error);
+      // Failed to decrypt stored data
       return null;
     }
   }

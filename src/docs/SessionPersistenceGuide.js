@@ -46,8 +46,8 @@
  * 🎯 Reliability: Handles network issues gracefully
  */
 
-console.log('🎯 Professional Session Persistence System Loaded');
-console.log('✅ Users will now stay logged in across page refreshes');
-console.log('🔒 Authentication is handled securely and professionally');
+// Professional Session Persistence System Loaded
+// Users will now stay logged in across page refreshes
+// Authentication is handled securely and professionally
 
 export default {};

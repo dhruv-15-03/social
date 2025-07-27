@@ -82,7 +82,7 @@ const AuthenticationWrapper = ({
       <LoadingComponent 
         timeout={15000}
         onTimeout={() => {
-          console.warn('Authentication timeout, reinitializing...');
+          // Authentication timeout, reinitializing...
           reinitialize();
         }}
       />

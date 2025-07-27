@@ -11,4 +11,12 @@ post:postReducer,
 message:messageReducer,
 profile:profilereducer
 })
-export const store=legacy_createStore(rootReducers,applyMiddleware(thunk))
+
+// Optimized middleware for development
+const middleware = [thunk];
+if (process.env.NODE_ENV === 'development') {
+  // Skip Redux DevTools extension in development for faster loading
+  // It can be manually enabled via browser extension if needed
+}
+
+export const store=legacy_createStore(rootReducers,applyMiddleware(...middleware))

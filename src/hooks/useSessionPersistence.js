@@ -114,18 +114,10 @@ export const useSessionPersistence = () => {
         initializeAuthentication();
     }, [initializeAuthentication]);
 
+    // Debug logging removed for production
     useEffect(() => {
-        if (process.env.NODE_ENV === 'development') {
-            console.log('🔍 Auth State Debug:', {
-                jwt: !!auth.jwt,
-                user: !!auth.user,
-                loading: auth.loading,
-                isInitializing: initializationState.isInitializing,
-                initComplete: initializationState.initializationComplete,
-                hasRestored: initializationState.hasRestoredSession,
-                status: getAuthenticationStatus()
-            });
-        }
+        // Authentication state monitoring for development purposes
+        // State tracking logic here if needed for debugging
     }, [
         auth.jwt, 
         auth.user, 

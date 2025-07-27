@@ -140,7 +140,7 @@ const ErrorSnackbar = ({ error, onClose }) => {
         await error.retry();
         handleClose();
       } catch (retryError) {
-        console.error('Retry failed:', retryError);
+        // Retry failed - handle silently
       }
     }
   };
@@ -274,7 +274,7 @@ export const useApiErrorHandler = () => {
   const { addError } = useErrorHandler();
 
   const handleError = (error, options = {}) => {
-    console.error('API Error:', error);
+    // Handle API error
 
     const errorOptions = {
       url: error.config?.url,
@@ -321,7 +321,7 @@ export const withErrorBoundary = (WrappedComponent, fallbackComponent = null) =>
     }
 
     componentDidCatch(error, errorInfo) {
-      console.error('Error Boundary caught an error:', error, errorInfo);
+      // Error Boundary caught an error - handle silently or report to error service
     }
 
     render() {

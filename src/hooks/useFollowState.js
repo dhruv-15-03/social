@@ -7,7 +7,6 @@ export const useFollowState = (userId) => {
   const { auth, profile } = useSelector(store => store);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Check if current user follows this user
   const isFollowing = useMemo(() => {
     if (!profile.following || !auth?.user?.id) return false;
     return profile.following.some(user => user.id === userId);
@@ -21,7 +20,7 @@ export const useFollowState = (userId) => {
       await dispatch(follow(userId));
       return true;
     } catch (error) {
-      console.error('Follow action failed:', error);
+      // Handle follow action failure silently
       return false;
     } finally {
       setIsLoading(false);
