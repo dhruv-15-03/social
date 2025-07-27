@@ -1,0 +1,281 @@
+/* Mobile-specific styles for better responsive experience */
+
+/* Hide desktop scrollbars on mobile */
+@media (max-width: 768px) {
+  /* Hide scrollbars for mobile */
+  .mobile-layout::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .mobile-layout {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Ensure smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Optimize touch targets */
+  button, 
+  .MuiIconButton-root,
+  .MuiButton-root {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent horizontal scroll and ensure full width usage */
+  body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Remove any unwanted margins/padding on mobile */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Ensure cards take full available width on mobile */
+  .MuiCard-root {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Remove excessive padding on mobile containers */
+  .px-20 {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .px-5 {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* Ensure mobile content uses full screen width */
+  .max-w-2xl {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  * {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .story-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    padding: 8px 0;
+    scroll-snap-type: x mandatory;
+  }
+
+  .story-item {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+
+  /* Post cards mobile optimization */
+  .MuiCard-root {
+    margin-bottom: 8px !important;
+    border-radius: 12px !important;
+  }
+
+  /* Better input focus states on mobile */
+  input:focus,
+  textarea:focus {
+    outline: 2px solid #1976d2;
+    outline-offset: 2px;
+  }
+
+  /* Optimize Material-UI components for mobile */
+  .MuiBottomNavigation-root {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+  }
+
+  /* Safe area handling for devices with notches */
+  .mobile-safe-area {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .mobile-safe-area-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 20px);
+  }
+
+  /* Improved touch scrolling */
+  .mobile-scroll {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Loading states optimized for mobile */
+  .mobile-skeleton {
+    border-radius: 12px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Mobile-specific animations */
+  .mobile-fade-in {
+    animation: mobileSlideUp 0.3s ease-out;
+  }
+
+  @keyframes mobileSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Optimize image loading on mobile */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Better video controls on mobile */
+  video {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: cover;
+  }
+
+  /* Mobile-friendly modals */
+  .MuiModal-root .MuiBox-root {
+    margin: 16px !important;
+    max-height: calc(100vh - 32px) !important;
+    overflow-y: auto !important;
+  }
+
+  /* Profile image optimization */
+  .MuiAvatar-root {
+    transition: transform 0.2s ease;
+  }
+
+  .MuiAvatar-root:active {
+    transform: scale(0.95);
+  }
+
+  /* Better card spacing on mobile */
+  .MuiCardContent-root {
+    padding: 12px 16px !important;
+  }
+
+  .MuiCardActions-root {
+    padding: 8px 16px !important;
+  }
+
+  /* Responsive typography */
+  h1 { font-size: 1.5rem !important; }
+  h2 { font-size: 1.25rem !important; }
+  h3 { font-size: 1.125rem !important; }
+  
+  .MuiTypography-body1 {
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .MuiTypography-body2 {
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+  }
+}
+
+/* Tablet-specific optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .tablet-layout {
+    padding: 0 24px;
+  }
+
+  .MuiCard-root {
+    margin-bottom: 16px;
+    border-radius: 16px;
+  }
+}
+
+/* Desktop enhancements */
+@media (min-width: 1025px) {
+  .desktop-layout {
+    padding: 0 32px;
+  }
+
+  /* Hover states for desktop */
+  .MuiCard-root:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .MuiIconButton-root:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .mobile-layout {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+
+  .MuiCard-root {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+  }
+
+  .MuiBottomNavigation-root {
+    background: rgba(45, 45, 45, 0.95) !important;
+    border-top-color: rgba(255, 255, 255, 0.12) !important;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .MuiButton-root,
+  .MuiIconButton-root {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Focus visible improvements */
+.js-focus-visible .MuiIconButton-root:focus:not(.focus-visible) {
+  outline: none;
+}
+
+.js-focus-visible .MuiIconButton-root.focus-visible {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}

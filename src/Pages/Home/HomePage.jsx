@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getProfileAction } from "../../Redux/Auth/auth.actiion";
 import { useAuthUser } from "../../hooks/useOptimizedSelector";
 import { SidebarSkeleton, PostCardSkeleton } from "../../Components/UI/Skeletons";
+import MobileBottomNav from "../../Components/Navigation/MobileBottomNav";
 
 // Lazy load components
 const MiddlePart = lazy(() => import("../../Components/MiddlePart/MiddlePart"));
@@ -47,60 +48,68 @@ const HomePage = () => {
   }, [isMobile, isHomePage]);
 
   return (
-    <motion.div 
-      className="px-2 sm:px-5 lg:px-20 min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
-      initial="initial"
-      animate="animate"
-      variants={pageVariants}
-      transition={{ duration: 0.3 }}
-    >
-      <Grid container spacing={2} sx={{ minHeight: '100vh' }}>
-        {/* Sidebar */}
-        {!isMobile && (
-          <Grid item lg={gridLayout.sidebar} sx={{ display: { xs: 'none', lg: 'block' } }}>
-            <div className="sticky top-0 h-screen overflow-y-auto">
-              <Suspense fallback={<SidebarSkeleton />}>
-                <Sidebar />
-              </Suspense>
+    <>
+      <motion.div 
+        className="px-2 sm:px-5 lg:px-20 min-h-screen"
+        initial="initial"
+        animate="animate"
+        variants={pageVariants}
+        transition={{ duration: 0.3 }}
+        style={{
+          paddingBottom: isMobile ? '65px' : '0'
+        }}
+      >
+        <Grid container spacing={2} sx={{ minHeight: '100vh' }}>
+          {/* Sidebar - Hidden on Mobile */}
+          {!isMobile && (
+            <Grid item lg={gridLayout.sidebar} sx={{ display: { xs: 'none', lg: 'block' } }}>
+              <div className="sticky top-0 h-screen overflow-y-auto">
+                <Suspense fallback={<SidebarSkeleton />}>
+                  <Sidebar />
+                </Suspense>
+              </div>
+            </Grid>
+          )}
+
+          {/* Main Content */}
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            lg={gridLayout.main}
+            className="flex justify-center px-2 sm:px-5"
+          >
+            <div className="w-full max-w-2xl">
+              <AnimatePresence mode="wait">
+                <Suspense fallback={<PostCardSkeleton />}>
+                  <Routes>
+                    <Route path="/" element={<MiddlePart />} />
+                    <Route path="/reels" element={<Reels />} />
+                    <Route path="/create-reels" element={<CreateReels open={true} />} />
+                    <Route path="/profile/:userId" element={<Profile />} />
+                  </Routes>
+                </Suspense>
+              </AnimatePresence>
             </div>
           </Grid>
-        )}
 
-        {/* Main Content */}
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={gridLayout.main}
-          className="flex justify-center px-2 sm:px-5"
-        >
-          <div className="w-full max-w-2xl">
-            <AnimatePresence mode="wait">
-              <Suspense fallback={<PostCardSkeleton />}>
-                <Routes>
-                  <Route path="/" element={<MiddlePart />} />
-                  <Route path="/reels" element={<Reels />} />
-                  <Route path="/create-reels" element={<CreateReels open={true} />} />
-                  <Route path="/profile/:userId" element={<Profile />} />
-                </Routes>
-              </Suspense>
-            </AnimatePresence>
-          </div>
+          {/* Right Panel - Hidden on Mobile and Non-Home Pages */}
+          {isHomePage && !isMobile && (
+            <Grid item lg={gridLayout.right} sx={{ display: { xs: 'none', lg: 'block' } }}>
+              <div className="sticky top-0 h-screen overflow-y-auto">
+                <Suspense fallback={<div>Loading...</div>}>
+                  <HomeRight />
+                </Suspense>
+              </div>
+            </Grid>
+          )}
         </Grid>
+      </motion.div>
 
-        {/* Right Panel */}
-        {isHomePage && !isMobile && (
-          <Grid item lg={gridLayout.right} sx={{ display: { xs: 'none', lg: 'block' } }}>
-            <div className="sticky top-0 h-screen overflow-y-auto">
-              <Suspense fallback={<div>Loading...</div>}>
-                <HomeRight />
-              </Suspense>
-            </div>
-          </Grid>
-        )}
-      </Grid>
-    </motion.div>
+      {/* Mobile Bottom Navigation */}
+      {isMobile && <MobileBottomNav />}
+    </>
   );
 };
 

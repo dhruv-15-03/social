@@ -16,13 +16,15 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 600,
+  width: { xs: '90%', sm: 600 },
+  maxWidth: 600,
   bgcolor: 'background.paper',
   boxShadow: 24,
-  p: 2,
-  outline:"none",
-  overFlow:"scroll-y",
-  borderRadius:3,
+  p: 3,
+  outline: "none",
+  overflowY: "auto",
+  borderRadius: 3,
+  maxHeight: '90vh'
 };
 
 export default function ProfileModal({open,handleClose}) {

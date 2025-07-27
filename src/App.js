@@ -1,7 +1,7 @@
 
 import React, { Suspense, lazy } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import AuthenticationWrapper from "./Components/Auth/AuthenticationWrapper";
+import ProfessionalAuthWrapper from "./Components/Auth/ProfessionalAuthWrapper";
 import { AppLoader } from "./Components/UI/LoadingComponents";
 import ProductionErrorBoundary from "./Components/ErrorBoundary/ProductionErrorBoundary";
 import SEOHead from "./Components/SEO/SEOHead";
@@ -63,7 +63,7 @@ function App() {
       <SEOHead {...getSEOProps()} />
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Suspense fallback={<LoadingFallback />}>
-          <AuthenticationWrapper 
+          <ProfessionalAuthWrapper 
             loginComponent={Authentication}
             loadingComponent={AppLoader}
           >
@@ -71,7 +71,7 @@ function App() {
               <Route path='/*' element={<HomePage />} />
               <Route path='/messages' element={<Messages />} />
             </Routes>
-          </AuthenticationWrapper>
+          </ProfessionalAuthWrapper>
         </Suspense>
       </div>
     </ProductionErrorBoundary>

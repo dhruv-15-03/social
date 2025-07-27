@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { Box, Typography, Button, Alert, Fade, LinearProgress } from '@mui/material';
 import { AppLoader } from '../UI/LoadingComponents';
@@ -15,13 +13,11 @@ const AuthenticationWrapper = ({
 }) => {
   const {
     isInitializing,
-    initializationComplete,
     hasRestoredSession,
     isAuthenticated,
     needsAuthentication,
     authenticationStatus,
     error,
-    user,
     isLoading,
     clearSession,
     reinitialize
@@ -89,8 +85,6 @@ const AuthenticationWrapper = ({
     );
   }
 
-  // Show error state with recovery options
-  if (authenticationStatus === 'error' && error) {
   // Show error state with recovery options
   if (authenticationStatus === 'error' && error) {
     return (
@@ -207,10 +201,8 @@ const AuthenticationWrapper = ({
     );
   }
 
+  // Fallback loading state
   return <LoadingComponent />;
-};
-
-export default AuthenticationWrapper;
 };
 
 export default AuthenticationWrapper;

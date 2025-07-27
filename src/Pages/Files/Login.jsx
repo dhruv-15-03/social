@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { TextField, Button, Alert, Box, Fade, CircularProgress } from "@mui/material";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUserAction, getProfileAction } from "../../Redux/Auth/auth.actiion";
+import { loginUserAction } from "../../Redux/Auth/auth.actiion";
 import { useNavigate } from "react-router-dom";
 import * as Yup from 'yup';
 import { logger } from '../../utils/productionLogger';
@@ -24,21 +24,6 @@ const Login = () => {
     const navigate = useNavigate();
     const [loginAttempts, setLoginAttempts] = useState(0);
     const [isRateLimited, setIsRateLimited] = useState(false);
-
-    useEffect(() => {
-        if (auth.jwt && auth.user && !auth.loading) {
-            logger.auth.info('User already authenticated, redirecting to home');
-            setTimeout(() => {
-                navigate('/', { replace: true });
-            }, 100);
-            return;
-        }
-
-        if (auth.jwt && !auth.user && !auth.loading) {
-            logger.auth.info('JWT found but no user profile, fetching profile');
-            dispatch(getProfileAction(auth.jwt));
-        }
-    }, [auth.jwt, auth.user, auth.loading, dispatch, navigate]);
 
     const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
         // Rate limiting protection

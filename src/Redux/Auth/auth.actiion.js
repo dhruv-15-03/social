@@ -62,6 +62,12 @@ export const loginUserAction = (loginData) => async (dispatch) => {
         if (data.token) {
             try {
                 await dispatch(getProfileAction(data.token));
+                logger.auth.login('Login completed successfully with profile data');
+                
+                // Navigate to home page after successful authentication
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 100);
             } catch (profileError) {
                 logger.auth.warn('Profile fetch failed after login, but login was successful');
             }
@@ -94,6 +100,12 @@ export const registerUserAction = (registerData) => async (dispatch) => {
         if (data.token) {
             try {
                 await dispatch(getProfileAction(data.token));
+                logger.auth.register('Registration completed successfully with profile data');
+                
+                // Navigate to home page after successful registration
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 100);
             } catch (profileError) {
                 logger.auth.warn('Profile fetch failed after registration, but registration was successful');
             }
