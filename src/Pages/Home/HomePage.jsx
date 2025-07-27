@@ -8,7 +8,6 @@ import { useAuthUser } from "../../hooks/useOptimizedSelector";
 import { SidebarSkeleton, PostCardSkeleton } from "../../Components/UI/Skeletons";
 import MobileBottomNav from "../../Components/Navigation/MobileBottomNav";
 
-// Lazy load components
 const MiddlePart = lazy(() => import("../../Components/MiddlePart/MiddlePart"));
 const Reels = lazy(() => import("../../Components/MiddlePart/Reels/Reels"));
 const CreateReels = lazy(() => import("../../Components/MiddlePart/Reels/CreateReels"));
@@ -50,13 +49,13 @@ const HomePage = () => {
   return (
     <>
       <motion.div 
-        className="px-2 sm:px-5 lg:px-20 min-h-screen"
+        className="lg:px-20 min-h-screen"
         initial="initial"
         animate="animate"
         variants={pageVariants}
         transition={{ duration: 0.3 }}
         style={{
-          paddingBottom: isMobile ? '65px' : '0'
+          paddingBottom: isMobile ? '80px' : '0'
         }}
       >
         <Grid container spacing={2} sx={{ minHeight: '100vh' }}>
@@ -78,7 +77,7 @@ const HomePage = () => {
             sm={12}
             md={12}
             lg={gridLayout.main}
-            className="flex justify-center px-2 sm:px-5"
+            className="flex justify-center"
           >
             <div className="w-full max-w-2xl">
               <AnimatePresence mode="wait">

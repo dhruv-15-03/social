@@ -1,4 +1,4 @@
-import { Avatar, Box, Card, IconButton } from "@mui/material";
+import { Avatar, Box, Card, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import StoryCircle from "./StoryCircle";
@@ -18,6 +18,8 @@ const MiddlePart = React.memo(() => {
     const { auth } = useSelector(store => store);
     const dispatch = useDispatch();
     const { post } = useSelector(store => store);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     
     const [openCreatePostModal, setOpenCreatePostModal] = useState(false);
     const handleCloseCreatePostModal = useCallback(() => {
@@ -59,15 +61,15 @@ const MiddlePart = React.memo(() => {
     }, [post.posts]);
 
     return (
-        <div className="px-20">
+        <div className="px-4 sm:px-8 lg:px-20">
             <section>
-                <div className="flex p-5 items-centre rounded-b-md">
+                <div className="flex p-2 sm:p-5 items-centre rounded-b-md">
                     <div className="flex flex-row mr-4 cursor-pointer items-centre">
                         <Box sx={{ position: "relative", display: "inline-block" }}>
                             <Avatar
                                 sx={{
-                                    width: "5rem",
-                                    height: "5rem",
+                                    width: isMobile ? "4rem" : "5rem",
+                                    height: isMobile ? "4rem" : "5rem",
                                     borderStyle: 'groove',
                                     borderColor: "#f70776",
                                     borderWidth: auth.My_story?.length > 0 ? "4px" : "0",
@@ -84,7 +86,7 @@ const MiddlePart = React.memo(() => {
                                     position: "absolute",
                                     bottom: "0",
                                     right: "0",
-                                    fontSize: "2.2rem",
+                                    fontSize: isMobile ? "1.8rem" : "2.2rem",
                                     backgroundColor: "white",
                                     borderRadius: "50%",
                                     padding: "0.2rem",
@@ -103,41 +105,58 @@ const MiddlePart = React.memo(() => {
                     </div>
                 </div>
             </section>
-            <Card className="w-[100%] p-5 mt-5">
+            <Card className="w-full p-3 sm:p-5 mt-3 sm:mt-5">
                 <div className="flex justify-between">
-                    <Avatar sx={{ bgcolor: yellow[600] }}>
+                    <Avatar sx={{ 
+                        bgcolor: yellow[600],
+                        width: isMobile ? 40 : 48,
+                        height: isMobile ? 40 : 48
+                    }}>
                         {auth.user?.name[0] ? auth.user?.name[0] : 'O'}
                     </Avatar>
                     <input 
                         onClick={handleOpenCreatePostModal} 
                         readOnly 
-                        className="outline-none w-[100%] pl-2 rounded-full px-5 bg-transparent border-[#3b4054] border" 
+                        className="outline-none w-full ml-2 sm:ml-3 rounded-full px-3 sm:px-5 py-2 bg-transparent border-[#3b4054] border" 
                         type="text" 
                         placeholder="New Post" 
+                        style={{ fontSize: isMobile ? '14px' : '16px' }}
                     />
                 </div>
-                <div className="flex justify-center mt-5 space-x-9">
+                <div className="flex justify-center mt-3 sm:mt-5 space-x-4 sm:space-x-9">
                     <div className="flex items-center">
-                        <IconButton color="primary" onClick={handleOpenCreatePostModal}>
+                        <IconButton 
+                            color="primary" 
+                            onClick={handleOpenCreatePostModal}
+                            size={isMobile ? "small" : "medium"}
+                        >
                             <ImageIcon />
                         </IconButton>
-                        <span>media</span>
+                        <span style={{ fontSize: isMobile ? '12px' : '14px' }}>media</span>
                     </div>
                     <div className="flex items-center">
-                        <IconButton color="primary" onClick={handleOpenCreatePostModal}>
+                        <IconButton 
+                            color="primary" 
+                            onClick={handleOpenCreatePostModal}
+                            size={isMobile ? "small" : "medium"}
+                        >
                             <VideocamIcon />
                         </IconButton>
-                        <span>Video</span>
+                        <span style={{ fontSize: isMobile ? '12px' : '14px' }}>Video</span>
                     </div>
                     <div className="flex items-center">
-                        <IconButton color="primary" onClick={handleOpenCreatePostModal}>
+                        <IconButton 
+                            color="primary" 
+                            onClick={handleOpenCreatePostModal}
+                            size={isMobile ? "small" : "medium"}
+                        >
                             <ArticleIcon />
                         </IconButton>
-                        <span>Write Thoughts...</span>
+                        <span style={{ fontSize: isMobile ? '12px' : '14px' }}>Thoughts</span>
                     </div>
                 </div>
             </Card>
-            <div className="mt-5 space-y-5">
+            <div className="mt-3 sm:mt-5 space-y-3 sm:space-y-5">
                 {memoizedPosts}
             </div>
             <div>
