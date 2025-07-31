@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { FormControlLabel, Radio, RadioGroup, TextField, Button, Alert, Box } from "@mui/material";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +23,6 @@ const Register = () => {
     const { auth } = useSelector(store => store);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [gender, setGender] = useState("");
 
     // Enhanced authentication check
     useEffect(() => {
@@ -39,7 +38,6 @@ const Register = () => {
 
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
-            values.gender = gender;
             await dispatch(registerUserAction({ data: values }));
         } catch (error) {
             // Error handling is done by Redux action
@@ -48,9 +46,6 @@ const Register = () => {
         }
     };
 
-    const handleGenderChange = (event) => {
-        setGender(event.target.value);
-    };
     return (
         <div>
             {/* Register Header */}
@@ -68,7 +63,7 @@ const Register = () => {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
             >
-                {({ isSubmitting }) => (
+                {({ isSubmitting, setFieldValue, values, touched, errors }) => (
                     <Form className="space-y-4">
                         <div className="space-y-4">
                             <div>
@@ -284,8 +279,8 @@ const Register = () => {
                                 <RadioGroup
                                     row
                                     name="gender"
-                                    value={gender}
-                                    onChange={handleGenderChange}
+                                    value={values.gender}
+                                    onChange={e => setFieldValue('gender', e.target.value)}
                                     sx={{
                                         '& .MuiFormControlLabel-label': {
                                             fontSize: '14px',
@@ -317,8 +312,8 @@ const Register = () => {
                                         disabled={isSubmitting || auth.loading}
                                     />
                                 </RadioGroup>
-                                {!gender && (
-                                    <div className="text-red-500 text-sm mt-1">Gender is required</div>
+                                {touched.gender && errors.gender && (
+                                    <div className="text-red-500 text-sm mt-1">{errors.gender}</div>
                                 )}
                             </Box>
                             
