@@ -5,11 +5,17 @@ export const createMessage=(reqData)=>async(dispatch)=>{
     dispatch({type:CREATE_MESSAGE_REQUEST})
     try {
         const {data}=await api.post(`/api/message/new/${reqData.message.chatId}`,reqData.message);
-        reqData.sendMessageToServer(data)
+        
+        
+        if (reqData.sendMessageToServer && typeof reqData.sendMessageToServer === 'function') {
+            reqData.sendMessageToServer(data);
+        } else {
+            // Handle case where sendMessageToServer is not provided
+        }
+        
         dispatch({type:CREATE_MESSAGE_SUCCESS,payload:data})
         
     } catch (error) {
-
         dispatch({
             type:CREATE_MESSAGE_FAILURE,payload:error
         });

@@ -78,10 +78,8 @@ const Messages = React.memo(() => {
         setConnectionStatus('connected');
     }, []);
 
-    // Chat subscription management
     useEffect(() => {
         if (currentChat) {
-            // TODO: Subscribe to chat messages
         }
     }, [currentChat]);
 
@@ -90,16 +88,24 @@ const Messages = React.memo(() => {
         dispatch(getAllChats());
     }, [dispatch]);
 
-    // Update messages when chat changes
     useEffect(() => {
+        
+        
         if (currentChat) {
-            setMessages(currentChat.message || []);
+            const updatedChat = message.chats.find(chat => chat.chatId === currentChat.chatId);
+            
+            if (updatedChat) {
+                setMessages(updatedChat.message || []);
+                setCurrentChat(updatedChat); // Update current chat with latest data
+            } else {
+                
+                setMessages(currentChat.message || []);
+            }
             // Clear unread count for current chat
             setUnreadMessages(prev => ({ ...prev, [currentChat.chatId]: 0 }));
         }
-    }, [currentChat]);
+    }, [currentChat, message.chats]);
 
-    // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
         if (chatContainerRef.current) {
             const container = chatContainerRef.current;
@@ -140,7 +146,7 @@ const Messages = React.memo(() => {
         }
     }, []);
 
-    const handleCreateMessage = useCallback(() => {
+    const handleCreateMessage = useCallback(async () => {
         if (!val.trim() && !selectedImage) return;
 
         const newMessage = {
@@ -151,8 +157,21 @@ const Messages = React.memo(() => {
         
         setVal('');
         setSelectedImage("");
-        dispatch(createMessage({ message: newMessage }));
-    }, [val, selectedImage, currentChat?.chatId, dispatch]);
+        
+        // Dispatch the message creation
+        try {
+            const result = await dispatch(createMessage({ message: newMessage }));
+        } catch (error) {
+            console.error('❌ Error sending message:', error);
+        }
+        
+        // Auto-scroll to bottom after sending
+        setTimeout(() => {
+            if (chatContainerRef.current) {
+                chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+            }
+        }, 100);
+    }, [val, selectedImage, currentChat?.chatId, dispatch, message]);
 
     // WebSocket message receiver - currently unused but ready for implementation
     // const onMessageReceive = useCallback((nmessage) => {
