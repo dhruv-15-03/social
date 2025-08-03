@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useCallback } from "react";
 import { Avatar, Box, Button, Card, Tab, Tabs } from "@mui/material";
 import PostCard from "../../Components/Post/PostCard";
 import { useDispatch, useSelector } from "react-redux";
 import ProfileModal from "./ProfileModal";
 import { likedPostAction, savedPostAction } from "../../Redux/Post/post.action";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { follow, getFollowers, getFollowing, getPost, userPro, userReels } from "../../Redux/Profile/profileaction";
 import { isFollowBy } from "../Util2/isFollow.js";
 import { useResponsiveLayout } from "../../hooks/useResponsiveLayout";
+import { logoutAction } from "../../Redux/Auth/auth.actiion";
 const tabs=[
     {value:"post",name:"Post"},
     {value:"reels",name:"Reels"},
@@ -20,6 +21,7 @@ const tabs=[
 const Profile=()=>{
     const {userId}=useParams();
     const dispatch=useDispatch();
+    const navigate = useNavigate();
     const { isMobile } = useResponsiveLayout();
 
     useEffect(()=>{
@@ -69,6 +71,13 @@ const Profile=()=>{
         setOpen(false);
         window.location.reload()
     }
+
+    const handleLogout = useCallback(() => {
+            dispatch(logoutAction());
+            // handleClose();
+            navigate('/login');
+            window.location.reload();
+        }, [dispatch, navigate]);
 
       const isOwnProfile = () => {
         if (!auth.user?.id || !userId) return false;
@@ -128,6 +137,7 @@ const Profile=()=>{
                         
                         <Box sx={{ mt: isMobile ? 1 : 2 }}>
                             {isOwnProfile() ? (
+                                <div className="flex flex-col items-center mb-5 space-y-1">
                                 <Button 
                                     onClick={handleOpenProfileModal} 
                                     variant="outlined"
@@ -141,6 +151,20 @@ const Profile=()=>{
                                 >
                                     Edit Profile
                                 </Button>
+                                <Button 
+                                    onClick={handleLogout} 
+                                    variant="outlined"
+                                    size={isMobile ? "small" : "medium"}
+                                    sx={{
+                                        borderRadius: "25px",
+                                        px: isMobile ? 2 : 3,
+                                        fontWeight: 600,
+                                        textTransform: 'none'
+                                    }}
+                                >
+                                    Log Out
+                                </Button>
+                                </div>
                             ) : (
                                 <Button 
                                     variant={isLiked ? "outlined" : "contained"}
