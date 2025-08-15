@@ -1,138 +1,115 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
-import PopularUser from "./PopularUser";
-import { Card, Box, Typography, Button, Skeleton, Fade } from "@mui/material";
-import SearchUser2 from "../SearchUser2/SearchUser2";
-import { useDispatch, useSelector } from "react-redux";
-import { getUsers, getFollowing } from "../../Redux/Profile/profileaction";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+"use client"
+
+import React, { useEffect, useState, useMemo, useCallback } from "react"
+import PopularUser from "./PopularUser"
+import { Fade } from "@mui/material"
+import SearchUser2 from "../SearchUser2/SearchUser2"
+import { useDispatch, useSelector } from "react-redux"
+import { getUsers, getFollowing } from "../../Redux/Profile/profileaction"
+import { Visibility, VisibilityOff, PersonAdd } from "@mui/icons-material"
 
 const HomeRight = React.memo(() => {
-    const dispatch = useDispatch();
-    const [showAll, setShowAll] = useState(false);
-    const { profile, auth } = useSelector(store => store);
+  const dispatch = useDispatch()
+  const [showAll, setShowAll] = useState(false)
+  const { profile, auth } = useSelector((store) => store)
 
-    // Memoized users to show
-    const usersToShow = useMemo(() => {
-        if (!profile.users) return [];
-        return showAll ? profile.users : profile.users.slice(0, 5);
-    }, [profile.users, showAll]);
+  const usersToShow = useMemo(() => {
+    if (!profile.users) return []
+    return showAll ? profile.users : profile.users.slice(0, 5)
+  }, [profile.users, showAll])
 
-    // Get users on component mount
-    useEffect(() => {
-        if (!profile.users?.length) {
-            dispatch(getUsers());
-        }
-    }, [dispatch, profile.users?.length]);
+  useEffect(() => {
+    if (!profile.users?.length) {
+      dispatch(getUsers())
+    }
+  }, [dispatch, profile.users?.length])
 
-    // Get following list for current user
-    useEffect(() => {
-        if (auth?.user?.id && !profile.following?.length) {
-            dispatch(getFollowing(auth.user.id));
-        }
-    }, [dispatch, auth?.user?.id, profile.following?.length]);
+  useEffect(() => {
+    if (auth?.user?.id && !profile.following?.length) {
+      dispatch(getFollowing(auth.user.id))
+    }
+  }, [dispatch, auth?.user?.id, profile.following?.length])
 
-    const handleViewAll = useCallback(() => {
-        setShowAll(prev => !prev);
-    }, []);
+  const handleViewAll = useCallback(() => {
+    setShowAll((prev) => !prev)
+  }, [])
 
-    const isLoading = profile.loading;
-    const hasUsers = profile.users?.length > 0;
-    const showViewAllButton = profile.users?.length > 5;
+  const isLoading = profile.loading
+  const hasUsers = profile.users?.length > 0
+  const showViewAllButton = profile.users?.length > 5
 
-    return (
-        <Box sx={{ pr: 2 }}>
-            <SearchUser2 />
-            
-            <Card 
-                elevation={2}
-                sx={{ 
-                    p: 3, 
-                    mt: 2,
-                    borderRadius: 2,
-                    background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                    border: '1px solid',
-                    borderColor: 'divider'
-                }}
-            >
-                <Box sx={{ 
-                    display: "flex", 
-                    alignItems: "center", 
-                    justifyContent: "space-between", 
-                    mb: 3 
-                }}>
-                    <Typography 
-                        variant="h6" 
-                        sx={{ 
-                            fontWeight: 600,
-                            color: 'text.primary',
-                            fontSize: '1.1rem'
-                        }}
-                    >
-                        Suggestions For You
-                    </Typography>
-                    
-                    {showViewAllButton && (
-                        <Button
-                            size="small"
-                            onClick={handleViewAll}
-                            startIcon={showAll ? <VisibilityOff /> : <Visibility />}
-                            sx={{
-                                textTransform: 'none',
-                                fontWeight: 600,
-                                fontSize: '0.875rem',
-                                color: 'primary.main',
-                                '&:hover': {
-                                    backgroundColor: 'primary.50'
-                                }
-                            }}
-                        >
-                            {showAll ? 'Show Less' : 'View All'}
-                        </Button>
-                    )}
-                </Box>
+  return (
+    <div className="w-80 space-y-6">
+      <SearchUser2 />
 
-                <Box sx={{ minHeight: '200px' }}>
-                    {isLoading ? (
-                        // Loading skeletons
-                        Array.from({ length: 5 }).map((_, index) => (
-                            <Box key={index} sx={{ mb: 2 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                    <Skeleton variant="circular" width={40} height={40} />
-                                    <Box sx={{ flex: 1 }}>
-                                        <Skeleton variant="text" width="60%" height={20} />
-                                        <Skeleton variant="text" width="40%" height={16} />
-                                    </Box>
-                                    <Skeleton variant="rectangular" width={80} height={32} sx={{ borderRadius: 2 }} />
-                                </Box>
-                            </Box>
-                        ))
-                    ) : hasUsers ? (
-                        <Fade in={true} timeout={500}>
-                            <Box>
-                                {usersToShow.map((item) => (
-                                    <PopularUser key={item.id} item={item} />
-                                ))}
-                            </Box>
-                        </Fade>
-                    ) : (
-                        <Box 
-                            sx={{ 
-                                textAlign: 'center', 
-                                py: 4,
-                                color: 'text.secondary'
-                            }}
-                        >
-                            <Typography variant="body2">
-                                No suggestions available at the moment
-                            </Typography>
-                        </Box>
-                    )}
-                </Box>
-            </Card>
-        </Box>
-    );
-});
+      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+        {/* Header */}
+        <div className="p-6 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Suggestions For You</h3>
 
-HomeRight.displayName = 'HomeRight';
+            {showViewAllButton && (
+              <button
+                onClick={handleViewAll}
+                className="flex items-center space-x-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-semibold transition-colors"
+              >
+                {showAll ? (
+                  <>
+                    <VisibilityOff className="w-4 h-4" />
+                    <span>Show Less</span>
+                  </>
+                ) : (
+                  <>
+                    <Visibility className="w-4 h-4" />
+                    <span>View All</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        </div>
 
-export default HomeRight;
+        {/* Content */}
+        <div className="min-h-[300px]">
+          {isLoading ? (
+            // Loading skeletons
+            <div className="p-4 space-y-4">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/2"></div>
+                  </div>
+                  <div className="w-20 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          ) : hasUsers ? (
+            <Fade in={true} timeout={500}>
+              <div>
+                {usersToShow.map((item) => (
+                  <PopularUser key={item.id} item={item} />
+                ))}
+              </div>
+            </Fade>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
+              <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
+                <PersonAdd className="w-8 h-8 text-gray-400" />
+              </div>
+              <h4 className="text-gray-900 dark:text-white font-semibold mb-2">No suggestions yet</h4>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
+                Check back later for new people to connect with
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+})
+
+HomeRight.displayName = "HomeRight"
+
+export default HomeRight

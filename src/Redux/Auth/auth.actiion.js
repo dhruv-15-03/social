@@ -96,13 +96,11 @@ export const registerUserAction = (registerData) => async (dispatch) => {
         
         dispatch({ type: REGISTER_SUCCESS, payload: data.token });
         
-        // Fetch profile after successful registration
         if (data.token) {
             try {
                 await dispatch(getProfileAction(data.token));
                 logger.auth.register('Registration completed successfully with profile data');
                 
-                // Navigate to home page after successful registration
                 setTimeout(() => {
                     window.location.href = '/';
                 }, 100);
