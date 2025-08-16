@@ -19,12 +19,14 @@ const HomeRight = React.memo(() => {
   }, [profile.users, showAll])
 
   useEffect(() => {
+    // Only fetch users if we don't have them already
     if (!profile.users?.length) {
       dispatch(getUsers())
     }
   }, [dispatch, profile.users?.length])
 
   useEffect(() => {
+    // Only fetch following if we have a user ID and don't have following data
     if (auth?.user?.id && !profile.following?.length) {
       dispatch(getFollowing(auth.user.id))
     }

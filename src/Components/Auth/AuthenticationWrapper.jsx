@@ -210,7 +210,6 @@ const AuthenticationWrapper = ({
   return <LoadingComponent />;
 };
 
-export default AuthenticationWrapper;
-};
+}
 
 export default AuthenticationWrapper;

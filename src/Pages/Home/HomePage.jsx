@@ -49,7 +49,7 @@ const HomePage = () => {
   return (
     <>
       <motion.div 
-        className="lg:px-20 min-h-screen"
+        className="lg:px-10 min-h-screen"
         initial="initial"
         animate="animate"
         variants={pageVariants}
@@ -58,10 +58,14 @@ const HomePage = () => {
           paddingBottom: isMobile ? '80px' : '0'
         }}
       >
-        <Grid container spacing={2} sx={{ minHeight: '100vh' }}>
+        <Grid container spacing={2} sx={{ minHeight: '100vh', width: '100%' }}>
           {/* Sidebar - Hidden on Mobile */}
           {!isMobile && (
-            <Grid item lg={gridLayout.sidebar} sx={{ display: { xs: 'none', lg: 'block' } }}>
+            <Grid item lg={gridLayout.sidebar} sx={{ 
+              display: { xs: 'none', lg: 'block' },
+              p: 0,
+              m: 0
+            }}>
               <div className="sticky top-0 h-screen overflow-y-auto">
                 <Suspense fallback={<SidebarSkeleton />}>
                   <Sidebar />
@@ -78,6 +82,10 @@ const HomePage = () => {
             md={12}
             lg={gridLayout.main}
             className="flex justify-center"
+            sx={{ 
+              px: { xs: 1, sm: 2, lg: 3 },
+              py: { xs: 1, sm: 2 }
+            }}
           >
             <div className="w-full max-w-2xl">
               <AnimatePresence mode="wait">

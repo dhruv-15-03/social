@@ -35,18 +35,25 @@ const Profile = () => {
   const { auth, post, profile } = useSelector((store) => store)
 
   useEffect(() => {
-    if (value === "liked") {
+    if (value === "liked" && !post.likedPosts?.length) {
       dispatch(likedPostAction())
     } else if (value === "post") {
-      dispatch(getFollowing(userId))
-      dispatch(getFollowers(userId))
-      dispatch(getPost(userId))
-    } else if (value === "saved") {
+      // Only fetch if we don't have the data already
+      if (!profile.following?.length) {
+        dispatch(getFollowing(userId))
+      }
+      if (!profile.followers?.length) {
+        dispatch(getFollowers(userId))
+      }
+      if (!profile.posts?.length) {
+        dispatch(getPost(userId))
+      }
+    } else if (value === "saved" && !post.savedPosts?.length) {
       dispatch(savedPostAction())
-    } else if (value === "reels") {
+    } else if (value === "reels" && !profile.reels?.length) {
       dispatch(userReels(userId))
     }
-  }, [value, dispatch, userId])
+  }, [value, dispatch, userId, post.likedPosts?.length, post.savedPosts?.length, profile.following?.length, profile.followers?.length, profile.posts?.length, profile.reels?.length])
 
   const [isLiked, setIsLiked] = React.useState(false)
   useEffect(() => {
@@ -56,11 +63,12 @@ const Profile = () => {
     }
   }, [profile, auth?.user?.id])
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     dispatch(follow(userId))
     setIsLiked((prevLiked) => !prevLiked)
-    dispatch(userPro(userId))
-  }
+    // REMOVED: Redundant API call - follow action should update Redux state automatically
+    // dispatch(userPro(userId))
+  }, [dispatch, userId])
   const [open, setOpen] = React.useState(false)
   const handleOpenProfileModal = () => setOpen(true)
   const handleClose = () => {

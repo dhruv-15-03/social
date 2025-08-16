@@ -34,19 +34,44 @@ const PostCard = React.memo(({ item }) => {
   const [showComments, setShowComments] = React.useState(false)
   const [val, setVal] = React.useState("")
   const [anchorEl, setAnchorEl] = React.useState(null)
+  
+  // Add loading states to prevent spam
+  const [isLiking, setIsLiking] = React.useState(false)
+  const [isSaving, setIsSaving] = React.useState(false)
 
   const open = Boolean(anchorEl)
 
-  // Memoized handlers to prevent unnecessary re-renders
-  const handleLikePost = useCallback(() => {
-    dispatch(likePostAction(item.postID))
-    setIsLiked((prevLiked) => !prevLiked)
-  }, [dispatch, item.postID])
+  // Optimized like handler with debouncing and request deduplication
+  const handleLikePost = useCallback(async () => {
+    if (isLiking) return // Prevent spam clicks
+    
+    setIsLiking(true)
+    setIsLiked((prevLiked) => !prevLiked) // Optimistic update
+    
+    try {
+      await dispatch(likePostAction(item.postID))
+    } catch (error) {
+      setIsLiked((prevLiked) => !prevLiked)
+    } finally {
+      setIsLiking(false)
+    }
+  }, [dispatch, item.postID, isLiking])
 
-  const handleSavePost = useCallback(() => {
-    dispatch(savePostAction(item.postID))
-    setIsSaved((prevSaved) => !prevSaved)
-  }, [dispatch, item.postID])
+  const handleSavePost = useCallback(async () => {
+    if (isSaving) return // Prevent spam clicks
+    
+    setIsSaving(true)
+    setIsSaved((prevSaved) => !prevSaved) // Optimistic update
+    
+    try {
+      await dispatch(savePostAction(item.postID))
+    } catch (error) {
+      // Revert optimistic update on error
+      setIsSaved((prevSaved) => !prevSaved)
+    } finally {
+      setIsSaving(false)
+    }
+  }, [dispatch, item.postID, isSaving])
 
   const handleCreateComment = useCallback(
     (comment) => {

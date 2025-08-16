@@ -1,17 +1,13 @@
-import React, { useEffect, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Avatar } from "@mui/material";
-import { useDispatch, useSelector } from 'react-redux';
-import { getUser } from '../../Redux/Auth/auth.actiion';
+import { useSelector } from 'react-redux';
 import Render from './Render';
 
 const StoryCircle = React.memo(({ item }) => {
   const [open, setOpen] = React.useState(false);
   const { auth } = useSelector(store => store);
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getUser(item.id));
-  }, [dispatch, item.id]);
+  // REMOVED: Excessive API call - user data should come with story data or be bulk fetched
 
   const handleCloseRender = useCallback(() => {
     setOpen(false);

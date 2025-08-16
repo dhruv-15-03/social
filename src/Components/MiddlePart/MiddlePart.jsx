@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { getAllPostAction } from "../../Redux/Post/post.action"
 import CreateStoryModal from "../CreateSTory/CreateStoryModal"
 import { authStory, users } from "../../Redux/Auth/auth.actiion"
+import { useOptimizedDataFetch } from "../../hooks/useOptimizedDataFetch"
 import Render from "./Render"
 
 const MiddlePart = React.memo(() => {
@@ -21,6 +22,30 @@ const MiddlePart = React.memo(() => {
   const { post } = useSelector((store) => store)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
+
+  // Optimized data fetching for stories
+  const { refetch: refetchStories } = useOptimizedDataFetch({
+    action: () => Promise.all([
+      dispatch(authStory()),
+      dispatch(users())
+    ]),
+    selector: (state) => ({ 
+      myStory: state.auth.My_story, 
+      users: state.auth.users 
+    }),
+    cacheKey: 'stories-data',
+    cacheDuration: 3 * 60 * 1000, // 3 minutes for stories
+    condition: (data) => !data.myStory?.length && !data.users?.length
+  })
+
+  // Optimized data fetching for posts
+  const { refetch: refetchPosts } = useOptimizedDataFetch({
+    action: getAllPostAction,
+    selector: (state) => state.post.posts,
+    cacheKey: 'home-posts',
+    cacheDuration: 2 * 60 * 1000, // 2 minutes for posts
+    condition: (posts) => !posts?.length
+  })
 
   const [openCreatePostModal, setOpenCreatePostModal] = useState(false)
   const handleCloseCreatePostModal = useCallback(() => {
@@ -40,14 +65,7 @@ const MiddlePart = React.memo(() => {
 
   const [open, setOpen] = useState(false)
 
-  useEffect(() => {
-    dispatch(authStory())
-    dispatch(users())
-  }, [dispatch])
-
-  useEffect(() => {
-    dispatch(getAllPostAction())
-  }, [dispatch])
+  // REMOVED: Redundant useEffects - now handled by useOptimizedDataFetch hooks above
   const handleCloseRender = useCallback(() => {
     setOpen(false)
   }, [])
