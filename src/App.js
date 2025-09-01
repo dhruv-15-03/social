@@ -12,7 +12,6 @@ const LoadingFallback = () => <AppLoader />;
 function App() {
   const location = useLocation();
   
-  // Dynamic SEO based on current route
   const getSEOProps = () => {
     const path = location.pathname;
     

@@ -3,9 +3,7 @@
 import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { Box, CircularProgress, Typography, Skeleton } from '@mui/material';
 
-// Loading states for different content types
 const LoadingFallbacks = {
-  // Default loading spinner
   default: (
     <Box 
       display="flex" 
@@ -17,7 +15,6 @@ const LoadingFallbacks = {
     </Box>
   ),
 
-  // Card skeleton for content areas
   card: (
     <Box p={2}>
       <Skeleton variant="rectangular" width="100%" height={200} />

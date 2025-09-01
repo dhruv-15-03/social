@@ -39,7 +39,7 @@ class NetworkQualityDetector {
 
     try {
       const start = performance.now();
-      const response = await fetch('/api/ping', { 
+      const response = await fetch('/health/ping', { 
         method: 'HEAD',
         cache: 'no-cache',
         signal: AbortSignal.timeout(5000)
@@ -70,20 +70,16 @@ class NetworkQualityDetector {
 
 const networkDetector = new NetworkQualityDetector();
 
-// Advanced retry logic with exponential backoff
 const createRetryInterceptor = () => {
   return async (error) => {
     const { config } = error;
     
-    // Skip retry if explicitly disabled
     if (config.__skipRetry) {
       return Promise.reject(error);
     }
 
-    // Initialize retry count
     config.__retryCount = config.__retryCount || 0;
 
-    // Check if we should retry
     const shouldRetry = 
       config.__retryCount < RETRY_CONFIG.maxRetries &&
       (
@@ -104,7 +100,6 @@ const createRetryInterceptor = () => {
 
     config.__retryCount++;
 
-    // Calculate delay with exponential backoff
     const delay = RETRY_CONFIG.retryDelay * 
       Math.pow(RETRY_CONFIG.backoffMultiplier, config.__retryCount - 1);
 
@@ -114,14 +109,10 @@ const createRetryInterceptor = () => {
       reason: error.message
     });
 
-    // Adjust timeout based on network quality
     const networkQuality = await networkDetector.detectQuality();
     config.timeout = networkDetector.getTimeoutForQuality(config.timeout);
-
-    // Wait before retry
     await new Promise(resolve => setTimeout(resolve, delay));
 
-    // Retry the request
     return axios(config);
   };
 };
